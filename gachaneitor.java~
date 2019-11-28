@@ -707,8 +707,6 @@ class gachaneitor {
 					                          else
                                        System.out.println("Token <"+ keyword +">, lexema <"+yytext()+">, encontrado en linea: " + (yyline+1) + " columna: "+ (yycolumn+1));
                                 }
-                                else
-                                    Utility.error(Utility.E_IDENT,yytext(),yyline+1,yycolumn+1);
             }
           case 26: break;
           case 7: 

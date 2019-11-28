@@ -11,5 +11,7 @@ Además, cada receta deberá contar con información sobre el autor, el tipo de 
 # Modo de ejecucion
 
 jflex gachaneitor.jflex
+
 javac gachaneitor.java
+
 java gachaneitor ejemplo.txt
