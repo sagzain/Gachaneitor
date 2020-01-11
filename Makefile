@@ -1,12 +1,32 @@
 #!/usr/bin/make -f
 # -*- made:makefile -*-
 
-clean:
-	$(RM) ./classes/*.class
-	$(RM) ./classes/*.java
-	$(RM) ./classes/*.java~
+SRC := src/
+CLASSES := classes/
 
-run:
-	jflex -d ./classes/ ./src/*.jflex
-	javac ./classes/*.java
-	#$(CD) classes || java analex ../input/ejemplo.txt
+JVC := javac
+FLEX := jflex
+CUP := cup
+
+FLEXFLAG := -d
+
+.SUFFIXES: .java .class
+
+default: jflex compile execute
+
+all: flex cup compile execute
+
+jflex:
+	$(FLEX) $(FLEXFLAG) $(CLASSES) $(SRC)*.jflex
+
+cup:
+	#Próximamente
+
+compile:
+	$(JVC) $(CLASSES)*.java
+
+execute:
+	$(MAKE) -C $(CLASSES) execute
+
+clean:
+	$(RM) ./classes/*
