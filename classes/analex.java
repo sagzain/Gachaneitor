@@ -30,6 +30,7 @@ class Utility
     public static String keyWord(String cadena)
     {
         HashMap<String, String> keywords = new HashMap<String,String>();
+
         keywords.put("menu", "menu");
         keywords.put("nickname","nickname");
         keywords.put("platos", "platos");
@@ -37,14 +38,22 @@ class Utility
         keywords.put("introducir", "introducir");
         keywords.put("tipo", "tipo");
         keywords.put("comensales", "comensales");
-        keywords.put("tCocinado", "tiempo");
-        keywords.put("tPreparacion", "tiempo");
-        keywords.put("tTotal", "tiempo");
+        keywords.put("tCocinado","tCocinado");
+        keywords.put("tPreparacion", "tPreparacion");
+        keywords.put("tTotal", "tTotal");
         keywords.put("pasos", "pasos");
-        keywords.put("programa", "programa");
+        keywords.put("programar", "programar");
         keywords.put("plato", "plato");
         keywords.put("paso", "paso");
         keywords.put("realizar", "realizar");
+        keywords.put("min","tiempo");
+        keywords.put("h", "tiempo");
+        keywords.put("s", "tiempo");
+        keywords.put("ingredientes", "ingredientes");
+        keywords.put("uds", "medida");
+        keywords.put("kg", "medida");
+        keywords.put("gr", "medida");
+
 
         String keyword = new String();
         keyword = keywords.get(cadena);
@@ -85,20 +94,20 @@ class analex {
    * Translates characters to character classes
    */
   private static final String ZZ_CMAP_PACKED = 
-    "\11\0\1\3\1\1\1\22\1\22\1\2\22\0\1\3\1\0\1\11"+
-    "\5\0\1\20\1\21\1\24\1\0\1\17\2\0\1\23\1\5\11\7"+
-    "\1\0\1\16\5\0\32\12\4\4\1\6\1\4\32\13\1\14\1\0"+
-    "\1\15\7\0\1\22\u05da\0\12\10\206\0\12\10\306\0\12\10\u019c\0"+
-    "\12\10\166\0\12\10\166\0\12\10\166\0\12\10\166\0\12\10\166\0"+
-    "\12\10\166\0\12\10\166\0\12\10\166\0\12\10\166\0\12\10\140\0"+
-    "\12\10\166\0\12\10\106\0\12\10\u0116\0\12\10\106\0\12\10\u0746\0"+
-    "\12\10\46\0\12\10\u012c\0\12\10\200\0\12\10\246\0\12\10\6\0"+
-    "\12\10\266\0\12\10\126\0\12\10\206\0\12\10\6\0\12\10\u03ce\0"+
-    "\1\22\1\22\u85f6\0\12\10\u02a6\0\12\10\46\0\12\10\306\0\12\10"+
-    "\26\0\12\10\126\0\12\10\u0196\0\12\10\u5316\0\12\10\u0586\0\12\10"+
-    "\u0bbc\0\12\10\200\0\12\10\74\0\12\10\220\0\12\10\u0116\0\12\10"+
-    "\u01d6\0\12\10\u0176\0\12\10\146\0\12\10\u0216\0\12\10\u5176\0\12\10"+
-    "\346\0\12\10\u6c74\0\62\10\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\u280f\0";
+    "\11\0\1\4\1\1\1\22\1\22\1\2\22\0\1\3\1\0\1\13"+
+    "\5\0\1\20\1\21\1\24\1\0\1\17\2\0\1\23\1\12\11\10"+
+    "\1\0\1\16\5\0\32\5\4\0\1\6\1\0\32\7\1\14\1\0"+
+    "\1\15\7\0\1\22\u05da\0\12\11\206\0\12\11\306\0\12\11\u019c\0"+
+    "\12\11\166\0\12\11\166\0\12\11\166\0\12\11\166\0\12\11\166\0"+
+    "\12\11\166\0\12\11\166\0\12\11\166\0\12\11\166\0\12\11\140\0"+
+    "\12\11\166\0\12\11\106\0\12\11\u0116\0\12\11\106\0\12\11\u0746\0"+
+    "\12\11\46\0\12\11\u012c\0\12\11\200\0\12\11\246\0\12\11\6\0"+
+    "\12\11\266\0\12\11\126\0\12\11\206\0\12\11\6\0\12\11\u03ce\0"+
+    "\1\22\1\22\u85f6\0\12\11\u02a6\0\12\11\46\0\12\11\306\0\12\11"+
+    "\26\0\12\11\126\0\12\11\u0196\0\12\11\u5316\0\12\11\u0586\0\12\11"+
+    "\u0bbc\0\12\11\200\0\12\11\74\0\12\11\220\0\12\11\u0116\0\12\11"+
+    "\u01d6\0\12\11\u0176\0\12\11\146\0\12\11\u0216\0\12\11\u5176\0\12\11"+
+    "\346\0\12\11\u6c74\0\62\11\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\u280f\0";
 
   /** 
    * Translates characters to character classes
@@ -111,12 +120,13 @@ class analex {
   private static final int [] ZZ_ACTION = zzUnpackAction();
 
   private static final String ZZ_ACTION_PACKED_0 =
-    "\2\0\1\1\2\2\1\3\1\4\1\5\1\1\1\6"+
+    "\2\0\1\1\2\2\1\3\1\4\1\5\1\6\1\1"+
     "\1\7\1\10\1\11\1\12\1\13\1\14\1\15\1\16"+
-    "\1\17\2\16\1\0\1\20\1\21\1\22\1\23";
+    "\1\17\2\16\1\4\1\20\1\5\1\0\1\21\1\22"+
+    "\1\23\1\24";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[26];
+    int [] result = new int[29];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -143,11 +153,11 @@ class analex {
   private static final String ZZ_ROWMAP_PACKED_0 =
     "\0\0\0\25\0\52\0\52\0\77\0\52\0\124\0\151"+
     "\0\176\0\223\0\52\0\52\0\52\0\52\0\52\0\52"+
-    "\0\52\0\52\0\52\0\250\0\275\0\322\0\347\0\52"+
-    "\0\52\0\52";
+    "\0\52\0\52\0\52\0\250\0\275\0\322\0\347\0\374"+
+    "\0\u0111\0\u0126\0\52\0\52\0\52";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[26];
+    int [] result = new int[29];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -170,17 +180,18 @@ class analex {
   private static final int [] ZZ_TRANS = zzUnpackTrans();
 
   private static final String ZZ_TRANS_PACKED_0 =
-    "\1\3\1\4\1\5\1\6\1\7\1\3\1\7\1\10"+
-    "\1\3\1\11\1\7\1\12\1\13\1\14\1\15\1\16"+
-    "\1\17\1\20\1\21\2\3\1\22\1\23\1\21\17\22"+
-    "\1\21\1\24\1\25\26\0\1\4\30\0\3\7\2\0"+
-    "\2\7\16\0\1\10\1\0\2\10\26\0\2\26\16\0"+
-    "\3\7\2\0\1\7\1\12\34\0\1\27\1\30\23\0"+
-    "\1\31\7\0\1\26\2\0\1\32\2\26\11\0\1\27"+
-    "\2\0\17\27\1\0\2\27";
+    "\1\3\1\4\1\5\2\6\1\7\1\3\1\10\1\11"+
+    "\2\3\1\12\1\13\1\14\1\15\1\16\1\17\1\20"+
+    "\1\21\2\3\1\22\1\23\1\21\17\22\1\21\1\24"+
+    "\1\25\26\0\1\4\30\0\1\26\3\27\1\0\1\27"+
+    "\17\0\1\30\1\27\1\10\1\27\1\0\1\27\22\0"+
+    "\3\11\17\0\1\31\1\0\1\31\40\0\1\32\1\33"+
+    "\23\0\1\34\6\0\1\26\25\0\3\27\1\0\1\27"+
+    "\17\0\1\30\1\0\1\30\20\0\1\31\1\0\3\31"+
+    "\3\0\1\35\11\0\1\32\2\0\17\32\1\0\2\32";
 
   private static int [] zzUnpackTrans() {
-    int [] result = new int[252];
+    int [] result = new int[315];
     int offset = 0;
     offset = zzUnpackTrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -218,11 +229,11 @@ class analex {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\2\0\2\11\1\1\1\11\4\1\11\11\2\1\1\0"+
+    "\2\0\2\11\1\1\1\11\4\1\11\11\5\1\1\0"+
     "\1\1\3\11";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[26];
+    int [] result = new int[29];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -668,7 +679,7 @@ class analex {
             case COMMENT: {
               /* Error */ return YYEOF;
             }
-            case 27: break;
+            case 30: break;
             default:
         return YYEOF;
         }
@@ -678,84 +689,88 @@ class analex {
           case 1: 
             { /* Token erroneo */
             }
-          case 20: break;
+          case 21: break;
           case 2: 
             { /* No hacer nada ignora delimitadores */
             }
-          case 21: break;
+          case 22: break;
           case 3: 
             { /* No hacer nada */
             }
-          case 22: break;
-          case 4: 
-            { System.out.println("Token identificador encontrado en linea: " + (yyline+1) + " columna: " + (yycolumn+1));
-            }
           case 23: break;
-          case 5: 
-            { System.out.println("Token entero encontrado en linea: " + (yyline+1) + " columna: " + (yycolumn+1));
+          case 4: 
+            { System.out.println("Token <nombreTipo> encontrado en linea: " + (yyline+1) + " columna: " + (yycolumn+1));
             }
           case 24: break;
-          case 6: 
+          case 5: 
             { String keyword=new String();
-                                   keyword=Utility.keyWord(yytext());
-  	                               if (keyword != null)
-                                       System.out.println("Token <"+ keyword +"> encontrado en linea: " + (yyline+1) + " columna: "+ (yycolumn+1));
-                                   else
-                                      System.out.println("Error. Token <"+ keyword +"> encontrado en linea: " + (yyline+1) + " columna: "+ (yycolumn+1));
+                   keyword=Utility.keyWord(yytext());
+  	               if (keyword != null)
+                      System.out.println("Token <"+ keyword +"> encontrado en linea: " + (yyline+1) + " columna: "+ (yycolumn+1));
+                   else
+                      System.out.println("Error. Token <"+ keyword +"> encontrado en linea: " + (yyline+1) + " columna: "+ (yycolumn+1));
             }
           case 25: break;
-          case 7: 
-            { System.out.println("Token { encontrado en linea: " + (yyline+1) + " columna: " + (yycolumn+1));
+          case 6: 
+            { System.out.println("Token <entero> encontrado en linea: " + (yyline+1) + " columna: " + (yycolumn+1));
             }
           case 26: break;
-          case 8: 
-            { System.out.println("Token } encontrado en linea: " + (yyline+1) + " columna: " + (yycolumn+1));
+          case 7: 
+            { System.out.println("Token <llaveIzqd> encontrado en linea: " + (yyline+1) + " columna: " + (yycolumn+1));
             }
           case 27: break;
-          case 9: 
-            { System.out.println("Token ; encontrado en linea: " + (yyline+1) + " columna: " + (yycolumn+1));
+          case 8: 
+            { System.out.println("Token <llaveDrch> encontrado en linea: " + (yyline+1) + " columna: " + (yycolumn+1));
             }
           case 28: break;
-          case 10: 
-            { System.out.println("Token , encontrado en linea: " + (yyline+1) + " columna: " + (yycolumn+1));
+          case 9: 
+            { System.out.println("Token <puntocoma> encontrado en linea: " + (yyline+1) + " columna: " + (yycolumn+1));
             }
           case 29: break;
-          case 11: 
-            { System.out.println("Token ( encontrado en linea: " + (yyline+1) + " columna: " + (yycolumn+1));
+          case 10: 
+            { System.out.println("Token <coma> encontrado en linea: " + (yyline+1) + " columna: " + (yycolumn+1));
             }
           case 30: break;
-          case 12: 
-            { System.out.println("Token ) encontrado en linea: " + (yyline+1) + " columna: " + (yycolumn+1));
+          case 11: 
+            { System.out.println("Token <parentesisIzqd> encontrado en linea: " + (yyline+1) + " columna: " + (yycolumn+1));
             }
           case 31: break;
+          case 12: 
+            { System.out.println("Token <parentesisDrch> encontrado en linea: " + (yyline+1) + " columna: " + (yycolumn+1));
+            }
+          case 32: break;
           case 13: 
             { System.out.print(yytext());
             }
-          case 32: break;
+          case 33: break;
           case 14: 
             { /* ignora los contenidos de los comentarios */
             }
-          case 33: break;
+          case 34: break;
           case 15: 
             { /* ignora los saltos de l�nea en los comentarios */
             }
-          case 34: break;
-          case 16: 
-            { /* ignora los comentarios de una linea */
-            }
           case 35: break;
-          case 17: 
-            { 
+          case 16: 
+            { System.out.println("Token <identificador> encontrado en linea: " + (yyline+1) + " columna: " + (yycolumn+1));
             }
           case 36: break;
-          case 18: 
-            { /* Error */
+          case 17: 
+            { /* ignora los comentarios de una linea */
             }
           case 37: break;
-          case 19: 
-            { System.out.println("Token cadena encontrado en linea: " + (yyline+1) + " columna: " + (yycolumn+1));
+          case 18: 
+            { 
             }
           case 38: break;
+          case 19: 
+            { /* Error */
+            }
+          case 39: break;
+          case 20: 
+            { System.out.println("Token <cadena> encontrado en linea: " + (yyline+1) + " columna: " + (yycolumn+1));
+            }
+          case 40: break;
           default:
             zzScanError(ZZ_NO_MATCH);
         }

@@ -9,7 +9,4 @@ clean:
 run:
 	jflex -d ./classes/ ./src/*.jflex
 	javac ./classes/*.java
-
-	#modo ejecucion
-	#cd ./classes
-	#java ./analex ../input/ejemplo.txt
+	#$(CD) classes || java analex ../input/ejemplo.txt
