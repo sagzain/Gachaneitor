@@ -8,8 +8,14 @@ import java.util.*;
 
 /* ------------Declaracion de la lista de simbolos de la gramatica-----------*/
 
-terminal entero, id, cadena, izqLlave, drchLlave, pcoma, coma, izqParent, drchParent, menu, nickname, platos, sacar, introducir, tipo, comensales, pasos, programa, plato, paso, realizar, enumTipo, medida, invertir;
-non terminal MENU, AUTOR, DECLARACIONESPLATOS, INGREDIENTESGLOBALES, INGREDIENTE, DECLARACIONPLATO, LISTAPLATOS, PLATO, INFORMACION, TIPO, COMENSALES, TIEMPO, INGREDIENTES, PASOS, PASOTEXTUAL, PASOMAQUINA, PROGRAMAR, INTRODUCIR, SACAR;
+terminal entero, id, cadena, izqLlave, drchLlave, pcoma, coma, izqParent,
+drchParent, menu, nickname, platos, sacar, introducir, tipo, comensales, pasos,
+programa, plato, paso, realizar, enumTipo, medida, invertir;
+
+non terminal MENU, AUTOR, DECLARACIONESPLATOS, INGREDIENTESGLOBALES,
+INGREDIENTE, DECLARACIONPLATO, LISTAPLATOS, PLATO, INFORMACION, TIPO,
+COMENSALES, TIEMPO, INGREDIENTES, PASOS, PASOTEXTUAL, PASOMAQUINA, PROGRAMAR,
+INTRODUCIR, SACAR;
 
 
 /* -------------Declaracion de precedencias -----------*/
@@ -17,22 +23,41 @@ non terminal MENU, AUTOR, DECLARACIONESPLATOS, INGREDIENTESGLOBALES, INGREDIENTE
 
 
 /* --------------Declaracion de la gramatica -----------*/
+
 MENU ::= menu id izqLlave AUTOR DECLARACIONPLATOS LISTAPLATOS drchLlave;
+
 AUTOR ::= nickname id pcoma;
+
 DECLARACIONPLATOS ::= platos izqLlave INGREDIENTESGLOBALES DECLARACIONPLATO {DECLARACIONPLATO} drchLlave;
+
 INGREDIENTESGLOBALES ::=  ingredientes  izqLlave INGREDIENTE {INGREDIENTE} drchLlave;
+
 INGREDIENTE ::= entero medida cadena pcoma;
+
 DECLARACIONPLATO ::= plato cadena pcoma;
+
 LISTAPLATOS ::= PLATO {PLATO};
+
 PLATO ::= plato cadena izqLlave INFORMACION INGREDIENTES PASOS drchLlave;
+
 INFORMACION ::= TIPO COMENSALES TIEMPO;
+
 TIPO ::= tipo enumTipo pcoma;
+
 COMENSALES ::= comensales entero pcoma;
+
 TIEMPO ::= tCocinado entero tiempo pcoma tPreparacion entero tiempo pcoma tTotal entero tiempo pcoma;
+
 INGREDIENTES ::= ingredientes izqLlave INGREDIENTE {INGREDIENTE} drchLlave;
+
 PASOS ::= pasos izqLlave {PASOTEXTUAL} PASOMAQUINA {PASOMAQUINA} {PASOTEXTUAL} drchLlave;
+
 PASOTEXTUAL ::= realizar izqParent cadena drchParent pcoma;
+
 PASOMAQUINA ::= INTRODUCIR {PASOTEXTUAL} PROGRAMAR {PASOTEXTUAL} SACAR;
+
 PROGRAMAR ::= programar izqParent cadena coma entero coma entero coma entero coma invertir drchParent pcoma;
+
 INTRODUCIR ::= introducir izqParent entero medida cadena drchParent pcoma;
+
 SACAR ::= sacar izqParent cadena drchParent pcoma;
