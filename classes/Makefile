@@ -1,5 +1,5 @@
-JV := java 
+JV := java
 INPUT := ../input/
 
 execute:
-	$(JV) analex $(INPUT)ejemplo.txt
+	$(JV) parser $(INPUT)prueba.txt

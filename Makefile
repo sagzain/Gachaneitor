@@ -9,25 +9,25 @@ FLEX := jflex
 CUP := cup
 
 FLEXFLAG := -d
-CUPFLAG := -destdir
+CUPFLAG := -nowarn -destdir 
 
 .SUFFIXES: .java .class
 
-default: cup jflex compile execute
+default: jflex cup compile execute
 
 all: flex cup compile execute
 
 jflex:
-	$(FLEX) $(FLEXFLAG) $(CLASSES) $(SRC)*.jflex
+	$(FLEX) $(FLEXFLAG) $(CLASSES) $(SRC)*.fle
 
 cup:
 	$(CUP) $(CUPFLAG) $(CLASSES) $(SRC)*.cup
 
 compile:
-	$(JVC) $(CLASSES)*.java
+	$(JVC) $(CLASSES)scanner.java $(CLASSES)sym.java $(CLASSES)parser.java
 
 execute:
 	$(MAKE) -C $(CLASSES) execute
 
 clean:
-	$(RM) ./classes/*
+	$(RM) $(CLASSES)*.*

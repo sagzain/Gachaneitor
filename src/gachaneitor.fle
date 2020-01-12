@@ -1,0 +1,115 @@
+import java_cup.runtime.*;
+import java.util.HashMap;
+
+/*----------------------------------------------------------------------------*/
+
+class Utility
+{
+    private static HashMap<String, Integer> keywords = new
+    HashMap<String,Integer>(){
+      {
+        put("menu", sym.menu); put("nickname",sym.nickname);
+        put("platos", sym.platos); put("sacar", sym.sacar);
+        put("introducir", sym.introducir); put("tipo", sym.tipo);
+        put("comensales", sym.comensales); put("tCocinado",sym.tCocinado);
+        put("tPreparacion", sym.tPreparacion); put("tTotal", sym.tTotal);
+        put("pasos", sym.pasos); put("programar", sym.programar);
+        put("plato", sym.plato); put("realizar", sym.realizar);
+        put("ingredientes", sym.ingredientes);
+      }
+    };
+
+    public static Integer keyWord(String cadena)
+    {
+        int keyword = keywords.get(cadena);
+
+        return keyword;
+    }
+}
+
+/*--------------------Seccion de opciones y declaraciones---------------------*/
+
+/*--OPCIONES --*/
+
+%%
+
+%public
+
+/* Nombre de la clase generada para el analizador lexico*/
+%class scanner
+
+/* Indicar funcionamientoautonomo*/
+%standalone
+
+/*Encoding*/
+%8bit
+
+/* Posibilitar acceso a la columna y fila actual de analisis*/
+%line
+%column
+
+/* Habilitar la compatibilidad con la interfaz CUP para el generador sintáctico */
+%cup
+
+/* COMMENT es un estado para reconocer los comentarios (tipo c o java) */
+%state COMMENT
+
+/*--DECLARACIONES --*/
+
+NL = \n | \r | \r\n
+BLANCO = " "
+TAB = \t
+ID = [a-zA-Z][a-z0-9_]*
+ENTERO = [1-9][:digit:]*
+CADENA = \" [a-zA-Z][a-zA-Z_ ]* \"
+KEYWORD = [a-z][a-zA-Z]*
+MEDIDA = "kg" | "gr" | "uds"
+TIEMPO = "min" | "s" | "h"
+TIPO = [A-Z]+
+%%
+
+
+/* ------------------------Seccion de reglas y acciones ----------------------*/
+
+<YYINITIAL> {
+  {MEDIDA}      {return new Symbol(sym.medida);}
+  {TIEMPO}      {return new Symbol(sym.tiempo);}
+  {TIPO}        {return new Symbol(sym.tipo);}
+  {KEYWORD}     {Integer keyword = Utility.keyWord(yytext());
+  	             if (keyword != null)
+                  return new Symbol(keyword);
+                 else
+                  System.out.println("Error. Token <"+ keyword +"> encontrado en linea: " + (yyline+1) + " columna: "+ (yycolumn+1));
+                }
+  {ID}  				{return new Symbol(sym.id);}
+  {CADENA}  	  {return new Symbol(sym.cadena);}
+  {ENTERO}      {return new Symbol(sym.entero);}
+
+  {NL}          {}
+  {BLANCO}      {}
+  {TAB}         {}
+
+  /* Simbolos de separación */
+  "{" 					{return new Symbol(sym.izqLlave);}
+  "}" 					{return new Symbol(sym.drchLlave);}
+  ";" 					{return new Symbol(sym.pcoma);}
+  "," 					{return new Symbol(sym.coma);}
+  "(" 					{return new Symbol(sym.izqParent);}
+  ")" 					{return new Symbol(sym.drchParent);}
+
+  .             {}
+
+}
+
+<COMMENT> {
+  "//".*        {}
+
+  "/*"        	{}
+
+  "*/"					{}
+  .            	{}
+
+  [\n]        	{}
+}
+
+<<EOF>> 			{System.out.println("Analisis finalizado"); System.exit(0);}

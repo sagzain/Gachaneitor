@@ -1,16 +1,30 @@
 /* ----------------------Seccion de declaraciones package e imports--------------------*/
 
 import java_cup.runtime.*;
-import java.util.*;
+import java.io.*;
 
 /* ----------------------Seccion componentes de codigo de usuario --------------------*/
+
+parser code {:
+	public static void main(String args[]) throws Exception {
+		File fichero=new File(args[0]);
+		FileReader entrada =new FileReader(fichero);
+		try{
+		  new parser(new scanner(entrada)).parse();
+   System.out.println("Analisis Correcto ");
+		}
+		catch ( Exception e) {
+			System.out.println(" Analisis INCORRECTO !!");
+		}
+ 	}
+:}
 
 
 /* ------------Declaracion de la lista de simbolos de la gramatica-----------*/
 
 terminal entero, id, cadena, izqLlave, drchLlave, pcoma, coma, izqParent,
 drchParent, menu, nickname, platos, sacar, introducir, tipo, comensales, pasos,
-programar, plato, paso, realizar, enumTipo, medida, invertir, tiempo,
+programar, plato, realizar, enumTipo, medida, invertir, tiempo,
 ingredientes, tCocinado, tTotal, tPreparacion;
 
 non terminal MENU, AUTOR, DECLARACIONPLATOS, INGREDIENTESGLOBALES,
@@ -25,7 +39,9 @@ INTRODUCIR, SACAR;
 
 /* --------------Declaracion de la gramatica -----------*/
 
-MENU ::= menu id izqLlave AUTOR DECLARACIONPLATOS LISTAPLATOS drchLlave;
+MENU ::= menu id izqLlave drchLlave;
+
+//MENU ::= menu id izqLlave AUTOR DECLARACIONPLATOS LISTAPLATOS drchLlave;
 
 AUTOR ::= nickname id pcoma;
 
