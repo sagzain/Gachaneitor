@@ -1,5 +1,5 @@
+import java_cup.runtime.*;
 import java.util.HashMap;
-import java_cup.runtime.Symbol;
 
 /*----------------------------------------------------------------------------*/
 
@@ -66,21 +66,23 @@ CADENA = \" [a-zA-Z][a-zA-Z_ ]* \"
 KEYWORD = [a-z][a-zA-Z]*
 MEDIDA = "kg" | "gr" | "uds"
 TIEMPO = "min" | "s" | "h"
-
+TIPO = [A-Z]+
 %%
+
+
 /* ------------------------Seccion de reglas y acciones ----------------------*/
 
 <YYINITIAL> {
-  {MEDIDA}      {}
-  {TIEMPO}      {}
-  [A-Z]+          {System.out.println("Token <nombreTipo> encontrado en linea: " + (yyline+1) + " columna: " + (yycolumn+1));}
-  {KEYWORD}       {String keyword=new String();
-                   keyword=Utility.keyWord(yytext());
-  	               if (keyword != null)
-                      System.out.println("Token <"+ keyword +"> encontrado en linea: " + (yyline+1) + " columna: "+ (yycolumn+1));
-                   else
-                      System.out.println("Error. Token <"+ keyword +"> encontrado en linea: " + (yyline+1) + " columna: "+ (yycolumn+1));
-                               }
+  {MEDIDA}      {return Symbol(sym.medida);}
+  {TIEMPO}      {return Symbol(sym.tiempo);}
+  {TIPO}        {return Symbol(sym.tipo);}
+  {KEYWORD}     {String keyword=new String();
+                 keyword=Utility.keyWord(yytext());
+  	             if (keyword != null)
+                  return Symbol(sym.keyword.get(yytext()));
+                 else
+                  System.out.println("Error. Token <"+ keyword +"> encontrado en linea: " + (yyline+1) + " columna: "+ (yycolumn+1));
+                }
   {ID}  				{System.out.println("Token <identificador> encontrado en linea: " + (yyline+1) + " columna: " + (yycolumn+1));}
   {CADENA}  	  {System.out.println("Token <cadena> encontrado en linea: " + (yyline+1) + " columna: " + (yycolumn+1));}
   {ENTERO}      {System.out.println("Token <entero> encontrado en linea: " + (yyline+1) + " columna: " + (yycolumn+1));}

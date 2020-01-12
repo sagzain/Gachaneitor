@@ -10,9 +10,10 @@ import java.util.*;
 
 terminal entero, id, cadena, izqLlave, drchLlave, pcoma, coma, izqParent,
 drchParent, menu, nickname, platos, sacar, introducir, tipo, comensales, pasos,
-programa, plato, paso, realizar, enumTipo, medida, invertir;
+programar, plato, paso, realizar, enumTipo, medida, invertir, tiempo,
+ingredientes, tCocinado, tTotal, tPreparacion;
 
-non terminal MENU, AUTOR, DECLARACIONESPLATOS, INGREDIENTESGLOBALES,
+non terminal MENU, AUTOR, DECLARACIONPLATOS, INGREDIENTESGLOBALES,
 INGREDIENTE, DECLARACIONPLATO, LISTAPLATOS, PLATO, INFORMACION, TIPO,
 COMENSALES, TIEMPO, INGREDIENTES, PASOS, PASOTEXTUAL, PASOMAQUINA, PROGRAMAR,
 INTRODUCIR, SACAR;
@@ -28,15 +29,15 @@ MENU ::= menu id izqLlave AUTOR DECLARACIONPLATOS LISTAPLATOS drchLlave;
 
 AUTOR ::= nickname id pcoma;
 
-DECLARACIONPLATOS ::= platos izqLlave INGREDIENTESGLOBALES DECLARACIONPLATO {DECLARACIONPLATO} drchLlave;
+DECLARACIONPLATOS ::= platos izqLlave INGREDIENTESGLOBALES DECLARACIONPLATO DECLARACIONPLATO drchLlave;
 
-INGREDIENTESGLOBALES ::=  ingredientes  izqLlave INGREDIENTE {INGREDIENTE} drchLlave;
+INGREDIENTESGLOBALES ::=  ingredientes  izqLlave INGREDIENTE INGREDIENTE drchLlave;
 
 INGREDIENTE ::= entero medida cadena pcoma;
 
 DECLARACIONPLATO ::= plato cadena pcoma;
 
-LISTAPLATOS ::= PLATO {PLATO};
+LISTAPLATOS ::= PLATO PLATO;
 
 PLATO ::= plato cadena izqLlave INFORMACION INGREDIENTES PASOS drchLlave;
 
@@ -48,13 +49,13 @@ COMENSALES ::= comensales entero pcoma;
 
 TIEMPO ::= tCocinado entero tiempo pcoma tPreparacion entero tiempo pcoma tTotal entero tiempo pcoma;
 
-INGREDIENTES ::= ingredientes izqLlave INGREDIENTE {INGREDIENTE} drchLlave;
+INGREDIENTES ::= ingredientes izqLlave INGREDIENTE INGREDIENTE drchLlave;
 
-PASOS ::= pasos izqLlave {PASOTEXTUAL} PASOMAQUINA {PASOMAQUINA} {PASOTEXTUAL} drchLlave;
+PASOS ::= pasos izqLlave PASOTEXTUAL PASOMAQUINA PASOMAQUINA PASOTEXTUAL drchLlave;
 
 PASOTEXTUAL ::= realizar izqParent cadena drchParent pcoma;
 
-PASOMAQUINA ::= INTRODUCIR {PASOTEXTUAL} PROGRAMAR {PASOTEXTUAL} SACAR;
+PASOMAQUINA ::= INTRODUCIR PASOTEXTUAL PROGRAMAR PASOTEXTUAL SACAR;
 
 PROGRAMAR ::= programar izqParent cadena coma entero coma entero coma entero coma invertir drchParent pcoma;
 

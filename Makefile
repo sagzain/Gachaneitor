@@ -9,10 +9,11 @@ FLEX := jflex
 CUP := cup
 
 FLEXFLAG := -d
+CUPFLAG := -destdir
 
 .SUFFIXES: .java .class
 
-default: jflex compile execute
+default: cup jflex compile execute
 
 all: flex cup compile execute
 
@@ -20,7 +21,7 @@ jflex:
 	$(FLEX) $(FLEXFLAG) $(CLASSES) $(SRC)*.jflex
 
 cup:
-	#Próximamente
+	$(CUP) $(CUPFLAG) $(CLASSES) $(SRC)*.cup
 
 compile:
 	$(JVC) $(CLASSES)*.java
