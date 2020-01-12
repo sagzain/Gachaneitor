@@ -11,7 +11,7 @@ parser code {:
 		FileReader entrada =new FileReader(fichero);
 		try{
 		  new parser(new scanner(entrada)).parse();
-   System.out.println("Analisis Correcto ");
+   		System.out.println("ANALISIS CORRECTO ");
 		}
 		catch ( Exception e) {
 			System.out.println(" Analisis INCORRECTO !!");
@@ -23,15 +23,34 @@ parser code {:
 /* ------------Declaracion de la lista de simbolos de la gramatica-----------*/
 
 terminal entero, id, cadena, izqLlave, drchLlave, pcoma, coma, izqParent,
-drchParent, menu, nickname, platos, sacar, introducir, tipo, comensales, pasos,
-programar, plato, realizar, enumTipo, medida, invertir, tiempo,
+drchParent, menu, nickname, platos, sacar, introducir, comensales, pasos,
+programar, plato, realizar, tipo, medida, invertir, tiempo,
 ingredientes, tCocinado, tTotal, tPreparacion;
 
-non terminal MENU, AUTOR, DECLARACIONPLATOS, INGREDIENTESGLOBALES,
-INGREDIENTE, DECLARACIONPLATO, LISTAPLATOS, PLATO, INFORMACION, TIPO,
-COMENSALES, TIEMPO, INGREDIENTES, PASOS, PASOTEXTUAL, PASOMAQUINA, PROGRAMAR,
-INTRODUCIR, SACAR;
-
+non terminal SECCIONMENU,
+						 AUTOR,
+						 SECCIONPLATOS,
+						 LISTADOPLATOS,
+						 PLATO,
+						 SECCIONRECETAS,
+						 RECETA,
+						 INFORMACION,
+						 TIPO,
+						 COMENSALES,
+						 TIEMPO,
+						 SECCIONINGREDIENTES,
+						 LISTADOINGREDIENTES,
+						 INGREDIENTE,
+						 SECCIONPASOS,
+						 LISTAPASOS,
+						 PASO,
+						 PASOUSUARIO,
+						 PASOMAQUINA,
+						 ARGUMENTOSMAQUINA,
+						 INTRODUCIR,
+						 INTRODUCIRARGS,
+						 SACAR,
+						 SACARARGS;
 
 /* -------------Declaracion de precedencias -----------*/
 
@@ -39,42 +58,49 @@ INTRODUCIR, SACAR;
 
 /* --------------Declaracion de la gramatica -----------*/
 
-MENU ::= menu id izqLlave drchLlave;
-
-//MENU ::= menu id izqLlave AUTOR DECLARACIONPLATOS LISTAPLATOS drchLlave;
-
+SECCIONMENU ::= menu id izqLlave AUTOR SECCIONPLATOS SECCIONRECETAS drchLlave;
 AUTOR ::= nickname id pcoma;
 
-DECLARACIONPLATOS ::= platos izqLlave INGREDIENTESGLOBALES DECLARACIONPLATO DECLARACIONPLATO drchLlave;
+/*Declaracion de todos los platos con sus respectivos nombres*/
 
-INGREDIENTESGLOBALES ::=  ingredientes  izqLlave INGREDIENTE INGREDIENTE drchLlave;
+SECCIONPLATOS ::= platos izqLlave LISTADOPLATOS drchLlave;
+LISTADOPLATOS ::= PLATO | PLATO LISTADOPLATOS;
+PLATO ::= plato cadena pcoma;
 
-INGREDIENTE ::= entero medida cadena pcoma;
+/*Todas las recetas listadas un plato tras otro con su informacion pertinente*/
 
-DECLARACIONPLATO ::= plato cadena pcoma;
+SECCIONRECETAS ::= RECETA | RECETA SECCIONRECETAS;
+RECETA ::= plato cadena izqLlave INFORMACION SECCIONINGREDIENTES SECCIONPASOS drchLlave;
 
-LISTAPLATOS ::= PLATO PLATO;
-
-PLATO ::= plato cadena izqLlave INFORMACION INGREDIENTES PASOS drchLlave;
+/*La parte con la informacion sobre el plato: el tipo de plato que es,
+  para cuantos comensales y los tiempos que se tardan.*/
 
 INFORMACION ::= TIPO COMENSALES TIEMPO;
-
-TIPO ::= tipo enumTipo pcoma;
-
+TIPO ::= tipo tipo pcoma;
 COMENSALES ::= comensales entero pcoma;
+TIEMPO ::= tCocinado entero tiempo pcoma
+					 tPreparacion entero tiempo pcoma
+					 tTotal entero tiempo pcoma |
+					 tTotal entero tiempo pcoma |
+					 tCocinado entero tiempo pcoma
+					 tPreparacion entero tiempo pcoma;
 
-TIEMPO ::= tCocinado entero tiempo pcoma tPreparacion entero tiempo pcoma tTotal entero tiempo pcoma;
+/*La seccion correspondiente a los ingredientes necesarios para la preparacion
+  del plato*/
 
-INGREDIENTES ::= ingredientes izqLlave INGREDIENTE INGREDIENTE drchLlave;
+SECCIONINGREDIENTES ::= ingredientes izqLlave LISTADOINGREDIENTES drchLlave;
+LISTADOINGREDIENTES ::= INGREDIENTE | INGREDIENTE LISTADOINGREDIENTES;
+INGREDIENTE ::= entero medida id pcoma;
 
-PASOS ::= pasos izqLlave PASOTEXTUAL PASOMAQUINA PASOMAQUINA PASOTEXTUAL drchLlave;
+/*Seccion correspondiente con los pasos a seguir para la elaboracion del plato*/
 
-PASOTEXTUAL ::= realizar izqParent cadena drchParent pcoma;
-
-PASOMAQUINA ::= INTRODUCIR PASOTEXTUAL PROGRAMAR PASOTEXTUAL SACAR;
-
-PROGRAMAR ::= programar izqParent cadena coma entero coma entero coma entero coma invertir drchParent pcoma;
-
-INTRODUCIR ::= introducir izqParent entero medida cadena drchParent pcoma;
-
-SACAR ::= sacar izqParent cadena drchParent pcoma;
+SECCIONPASOS ::= pasos izqLlave LISTAPASOS drchLlave;
+LISTAPASOS ::= PASO | PASO LISTAPASOS;
+PASO ::= PASOUSUARIO | PASOMAQUINA | INTRODUCIR | SACAR;
+PASOUSUARIO ::= realizar izqParent cadena drchParent pcoma;
+PASOMAQUINA ::= programar izqParent ARGUMENTOSMAQUINA drchParent pcoma;
+ARGUMENTOSMAQUINA ::= cadena coma entero coma entero coma entero coma invertir;
+INTRODUCIR ::= introducir izqParent INTRODUCIRARGS drchParent pcoma;
+INTRODUCIRARGS ::= id | entero medida id;
+SACAR ::= sacar izqParent SACARARGS drchParent pcoma;
+SACARARGS ::= id | cadena;
