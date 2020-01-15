@@ -1,0 +1,99 @@
+/* ----------------------Seccion de declaraciones package e imports--------------------*/
+
+import java_cup.runtime.*;
+import java.io.*;
+
+/* ----------------------Seccion componentes de codigo de usuario --------------------*/
+
+parser code {:
+	public static void main(String args[]) throws Exception {
+		File fichero=new File(args[0]);
+		FileReader entrada =new FileReader(fichero);
+		try{
+		  new parser(new scanner(entrada)).parse();
+   		System.out.println("ANALISIS CORRECTO ");
+		}
+		catch ( Exception e) {
+			System.out.println(" Analisis INCORRECTO !!");
+		}
+ 	}
+:}
+
+
+/* ------------Declaracion de la lista de simbolos de la gramatica-----------*/
+
+terminal String id, cadena, /*Boolean*/ invertir, /*EnumTipo*/ nombreTipo, /*EnumIngrediente*/ medidaIngrediente, /*EnumTiempo*/ medidaTiempo;
+terminal Integer numero;
+terminal izqLlave, drchLlave, pcoma, coma, dospuntos, izqParent,
+drchParent, nickname, menu, platos, sacar, introducir, comensales, pasos, tipo,
+programar, plato, realizar, ingredientes, tCocinado, tTotal, tPreparacion;
+
+non terminal /*Menu*/ SECCIONMENU;
+non terminal String AUTOR;
+non terminal /*Vector<Plato>*/ SECCIONPLATOS, LISTADOPLATOS, SECCIONRECETAS, RECETA;
+non terminal /*Plato*/ PLATO;
+non terminal /*EnumTipo*/ TIPO;
+non terminal Integer COMENSALES;
+non terminal /*Vector<Integer>*/ TIEMPO;
+non terminal /*Vector<Ingrediente>*/ SECCIONINGREDIENTES, LISTADOINGREDIENTES;
+non terminal /*Ingrediente*/ INGREDIENTE;
+non terminal /*Vector<Paso>*/ SECCIONPASOS, LISTAPASOS, PASOS;
+non terminal /*Paso*/ PASO;
+non terminal /*Vector<PasoTextual>*/ PASOSTEXTUALES;
+non terminal /*PasoTextual padre Paso*/ PASOTEXTUAL;
+non terminal /*Vector<PasoMaquina>*/ PASOSMAQUINAS;
+non terminal /*PasoMaquina padre PasoTextual*/ PASOMAQUINA;
+non terminal /*PasoIntroducir padre Paso*/ INTRODUCIR, INTRODUCIRARGS;
+non terminal /*PasoSacar padre Paso*/ SACAR;
+
+/* -------------Declaracion de precedencias -----------*/
+
+
+
+/* --------------Declaracion de la gramatica -----------*/
+
+SECCIONMENU ::= menu id dospuntos cadena izqLlave AUTOR SECCIONPLATOS SECCIONINGREDIENTES SECCIONRECETAS drchLlave | menu id dospuntos cadena izqLlave AUTOR SECCIONPLATOS SECCIONRECETAS drchLlave;
+AUTOR ::= nickname id pcoma;
+
+/*Declaracion de todos los platos con sus respectivos nombres*/
+SECCIONPLATOS ::= platos izqLlave LISTADOPLATOS drchLlave;
+LISTADOPLATOS ::= PLATO | PLATO LISTADOPLATOS;
+PLATO ::= id dospuntos cadena pcoma;
+
+/*Todas las recetas listadas un plato tras otro con su informacion pertinente*/
+SECCIONRECETAS ::= RECETA | RECETA SECCIONRECETAS;
+RECETA ::= plato id izqLlave TIPO COMENSALES TIEMPO  SECCIONINGREDIENTES SECCIONPASOS drchLlave | plato cadena izqLlave TIPO COMENSALES TIEMPO  SECCIONPASOS drchLlave;
+
+/*La parte con la informacion sobre el plato: el tipo de plato que es, para cuantos comensales y los tiempos que se tardan.*/
+TIPO ::= tipo nombreTipo pcoma;
+COMENSALES ::= comensales numero pcoma;
+TIEMPO ::= tCocinado numero medidaTiempo pcoma
+					 tPreparacion numero medidaTiempo pcoma
+					 tTotal numero medidaTiempo pcoma |
+					 tTotal numero medidaTiempo pcoma |
+					 tCocinado numero medidaTiempo pcoma
+					 tPreparacion numero medidaTiempo pcoma;
+
+/*La seccion correspondiente a los ingredientes necesarios para la preparacion del plato*/
+SECCIONINGREDIENTES ::= ingredientes izqLlave LISTADOINGREDIENTES drchLlave;
+LISTADOINGREDIENTES ::= INGREDIENTE | INGREDIENTE LISTADOINGREDIENTES;
+INGREDIENTE ::= id:id dospuntos numero:can medidaIngrediente:med cadena:nom pcoma {:/*Ingrediente ingrediente = new Ingrediente(id, nom.substring(1,-1), can, med); RESULT=ingrediente;*/:};
+
+/*Seccion correspondiente con los pasos a seguir para la elaboracion del plato*/
+SECCIONPASOS ::= pasos izqLlave LISTAPASOS drchLlave;
+LISTAPASOS ::= PASOS SACAR PASOSTEXTUALES | PASOS SACAR LISTAPASOS;
+PASOS ::= PASOSTEXTUALES INTRODUCIR PASOSTEXTUALES PASOSMAQUINAS PASOS | PASOSTEXTUALES INTRODUCIR PASOS | PASOSTEXTUALES INTRODUCIR PASOSTEXTUALES PASOSMAQUINAS PASOSTEXTUALES;
+PASOSTEXTUALES ::= PASOTEXTUAL PASOSTEXTUALES |;
+PASOTEXTUAL ::= realizar izqParent cadena drchParent pcoma;
+PASOSMAQUINAS ::= PASOMAQUINA | PASOMAQUINA PASOSMAQUINAS;
+PASOMAQUINA ::= programar izqParent cadena coma numero coma numero coma numero coma invertir drchParent pcoma;
+INTRODUCIR ::= introducir izqParent INTRODUCIRARGS drchParent pcoma;
+INTRODUCIRARGS ::= id | numero medidaIngrediente id;
+SACAR ::= sacar izqParent cadena coma id drchParent pcoma;
+
+
+
+
+
+
+

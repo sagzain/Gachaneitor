@@ -1,0 +1,31 @@
+menu Mediterraneo : "Mediterraneo" {
+	nickname Alumno1;
+
+	platos {
+		Merluza_tomate : "Merluza con salsa de tomate";
+	}
+
+	plato Merluza_tomate {
+		tipo PESCADO;
+		comensales 4;
+		tCocinado 6 min;
+		tPreparacion 7 min;
+		tTotal 13 min;
+
+		ingredientes {
+		        Tomate : 3 uds "Tomate";
+		        Merluza_fresca : 1 uds "Merluza";
+        	}
+
+ 	      	pasos {
+		        introducir(1 uds Tomate);
+		        programar("Trocear",15,30,5,No);
+			sacar("Salsa", Salsa_de_tomate);
+			realizar("limpiar Merluza_fresca");
+			introducir(1 uds Merluza_fresca);
+		        introducir(1 uds Salsa_de_tomate);
+		        programar("calentar",10,10,10,Si);
+		        sacar("Merluza con salsa de tomate", Final);
+        	}
+    	}
+}	

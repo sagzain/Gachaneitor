@@ -1,0 +1,116 @@
+import java_cup.runtime.*;
+import java.util.HashMap;
+
+/*----------------------------------------------------------------------------*/
+
+class Utility
+{
+    private static HashMap<String, Integer> keywords = new
+    HashMap<String,Integer>(){
+      {
+        put("menu", sym.menu); put("nickname",sym.nickname);
+        put("platos", sym.platos); put("sacar", sym.sacar);
+        put("introducir", sym.introducir); put("tipo", sym.tipo);
+        put("comensales", sym.comensales); put("tCocinado",sym.tCocinado);
+        put("tPreparacion", sym.tPreparacion); put("tTotal", sym.tTotal);
+        put("pasos", sym.pasos); put("programar", sym.programar);
+        put("plato", sym.plato); put("realizar", sym.realizar);
+        put("ingredientes", sym.ingredientes);
+      }
+    };
+
+    public static Integer keyWord(String cadena)
+    {
+        int keyword = keywords.get(cadena);
+
+        return keyword;
+    }
+}
+
+/*--------------------Seccion de opciones y declaraciones---------------------*/
+
+/*--OPCIONES --*/
+
+%%
+
+%public
+
+/* Nombre de la clase generada para el analizador lexico*/
+%class scanner
+
+/* Indicar funcionamientoautonomo*/
+%standalone
+
+/*Encoding*/
+%8bit
+
+/* Posibilitar acceso a la columna y fila actual de analisis*/
+%line
+%column
+
+/* Habilitar la compatibilidad con la interfaz CUP para el generador sintáctico */
+%cup
+
+/* COMMENT es un estado para reconocer los comentarios (tipo c o java) */
+%state COMMENT
+
+/*--DECLARACIONES --*/
+
+/*NL = \n | \r | \r\n
+BLANCO = " "
+TAB = \t*/
+ID = [A-Z][a-zA-Z0-9_]*
+NUMERO = [1-9][:digit:]*
+CADENA = \" [a-zA-Z][a-zA-Z_ ]* \"
+KEYWORD = [a-z][a-zA-Z]*
+MEDIDA = "kg" | "gr" | "uds"
+TIEMPO = "min" | "s" | "h"
+TIPO = [A-Z]+
+INVERTIR = "Si" | "No"
+%%
+
+
+/* ------------------------Seccion de reglas y acciones ----------------------*/
+
+<YYINITIAL> {
+  {INVERTIR}    {System.out.println("Invertir "+yytext()); return new Symbol(sym.invertir, new String(yytext()));}
+  {MEDIDA}      {System.out.println("Cantidad "+yytext()); return new Symbol(sym.medidaIngrediente, new String(yytext()));}
+  {TIEMPO}      {System.out.println("Tiempo "+yytext()); return new Symbol(sym.medidaTiempo, new String(yytext()));}
+  {TIPO}        {System.out.println("Tipo "+yytext()); return new Symbol(sym.nombreTipo, new String(yytext()));}
+  {KEYWORD}     {System.out.println("Keyword "+yytext()); Integer keyword = Utility.keyWord(yytext());
+  	             if (keyword != null)
+                  return new Symbol(keyword);
+                 else
+                  return new Symbol(sym.error);
+                }
+  {ID}  				{System.out.println("ID "+yytext()); return new Symbol(sym.id, new String(yytext()));}
+  {CADENA}  	  {System.out.println("Cadena "+yytext()); return new Symbol(sym.cadena, new String(yytext()));}
+  {NUMERO}      {System.out.println("Numero "+yytext()); return new Symbol(sym.numero, new Integer(yytext()));}
+
+  /* Simbolos de separación */
+  ":" 					{System.out.println("Tipo "+yytext()); return new Symbol(sym.dospuntos);}
+  "{" 					{System.out.println("Tipo "+yytext()); return new Symbol(sym.izqLlave);}
+  "}" 					{System.out.println("Tipo "+yytext()); return new Symbol(sym.drchLlave);}
+  ";" 					{System.out.println("Tipo "+yytext()); return new Symbol(sym.pcoma);}
+  "," 					{System.out.println("Tipo "+yytext()); return new Symbol(sym.coma);}
+  "(" 					{System.out.println("Tipo "+yytext()); return new Symbol(sym.izqParent);}
+  ")" 					{System.out.println("Tipo "+yytext()); return new Symbol(sym.drchParent);}
+
+  .             {}
+
+}
+
+<COMMENT> {
+  "//".*        {}
+
+  "/*"        	{}
+
+  "*/"					{}
+  .            	{}
+
+  [\n]        	{}
+}
+
+[^] | \n {}
+
+<<EOF>> {return new Symbol(sym.EOF);}
