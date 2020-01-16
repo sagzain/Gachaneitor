@@ -1,1 +1,17 @@
 # Gachaneitor
+
+Una empresa Castellano Manchega, dirigida por un joven emprendedor de la región apodado el Dr. Doofenshmirtz manchego, ha ideado un robot de cocina que facilita la labor de la elaboración de menús a las familias "ocupadas" del siglo XXI. Su máquina la Gachaneitor 1.0 tiene un funcionamiento similar a otra máquina que ya existe en el mercado (la Thermomix) con la novedad de permitir su programación por cualquier persona. Para su construcción ha contado con la inestimable colaboración de un grupo de brillantes alumnos de la asignatura de "Procesadores de Lenguajes" de la Escuela Superior de Informática.
+
+Estos se encargarán de diseñar un lenguaje que permita definir una o varias recetas y de construir su procesador asociado que como salida deberá generar "algo" que permita simular su funcionamiento (Más Complejo - Más Valorado) o la visualización de las mismas en un lenguaje de marcado (Menos Complejo - Menos Valorado).
+
+El lenguaje deberá tener una zona en la que se definan los ingredientes y cantidades a usar a nivel de menú compuesto por varios platos y una zona de definición de las instrucciones de elaboración de cada plato que forma el menú, que obviamente deberá usar los ingredientes definidos. También será posible definir los ingredientes en la zona de elaboración de cada plato, en este caso solo podrán usarse en ese plato.
+
+Además, cada receta deberá contar con información sobre el autor, el tipo de plato, el tiempo de preparación, cocinado y total, el número de comensales y por supuesto el nombre de cada plato.
+
+# Modo de ejecucion
+
+jflex gachaneitor.jflex
+
+javac gachaneitor.java
+
+java gachaneitor ejemplo.txt

@@ -2,6 +2,7 @@
 
 import java_cup.runtime.*;
 import java.io.*;
+import java.util.ArrayList;
 
 /* ----------------------Seccion componentes de codigo de usuario --------------------*/
 
@@ -10,11 +11,11 @@ parser code {:
 		File fichero=new File(args[0]);
 		FileReader entrada =new FileReader(fichero);
 		try{
-		  new parser(new scanner(entrada)).parse();
-   		System.out.println("ANALISIS CORRECTO ");
+			new parser(new scanner(entrada)).parse();
+	   		System.out.println("Analisis CORRECTO");
 		}
 		catch ( Exception e) {
-			System.out.println(" Analisis INCORRECTO !!");
+			System.out.println("Analisis INCORRECTO");
 		}
  	}
 :}
@@ -22,29 +23,28 @@ parser code {:
 
 /* ------------Declaracion de la lista de simbolos de la gramatica-----------*/
 
-terminal String id, cadena, /*Boolean*/ invertir, /*EnumTipo*/ nombreTipo, /*EnumIngrediente*/ medidaIngrediente, /*EnumTiempo*/ medidaTiempo;
+terminal String id, cadena, invertir, nombreTipo, medidaIngrediente, medidaTiempo;
 terminal Integer numero;
-terminal izqLlave, drchLlave, pcoma, coma, dospuntos, izqParent,
-drchParent, nickname, menu, platos, sacar, introducir, comensales, pasos, tipo,
-programar, plato, realizar, ingredientes, tCocinado, tTotal, tPreparacion;
+terminal izqLlave, drchLlave, pcoma, coma, dospuntos, izqParent, drchParent, nickname, menu, platos, sacar, introducir, comensales, pasos, tipo, programar, plato, realizar, ingredientes, tCocinado, tTotal, tPreparacion;
 
-non terminal /*Menu*/ SECCIONMENU;
+non terminal ArrayList<Menu> PROGRAMA;
+non terminal Menu SECCIONMENU;
 non terminal String AUTOR;
-non terminal /*Vector<Plato>*/ SECCIONPLATOS, LISTADOPLATOS, SECCIONRECETAS, RECETA;
-non terminal /*Plato*/ PLATO;
-non terminal /*EnumTipo*/ TIPO;
+non terminal ArrayList<Plato> SECCIONPLATOS, LISTADOPLATOS, SECCIONRECETAS, RECETA;
+non terminal Plato PLATO;
+non terminal EnumTipo TIPO;
 non terminal Integer COMENSALES;
-non terminal /*Vector<Integer>*/ TIEMPO;
-non terminal /*Vector<Ingrediente>*/ SECCIONINGREDIENTES, LISTADOINGREDIENTES;
-non terminal /*Ingrediente*/ INGREDIENTE;
-non terminal /*Vector<Paso>*/ SECCIONPASOS, LISTAPASOS, PASOS;
-non terminal /*Paso*/ PASO;
-non terminal /*Vector<PasoTextual>*/ PASOSTEXTUALES;
-non terminal /*PasoTextual padre Paso*/ PASOTEXTUAL;
-non terminal /*Vector<PasoMaquina>*/ PASOSMAQUINAS;
-non terminal /*PasoMaquina padre PasoTextual*/ PASOMAQUINA;
-non terminal /*PasoIntroducir padre Paso*/ INTRODUCIR, INTRODUCIRARGS;
-non terminal /*PasoSacar padre Paso*/ SACAR;
+non terminal Tiempos TIEMPO;
+non terminal ArrayList<Ingrediente> SECCIONINGREDIENTES, LISTADOINGREDIENTES;
+non terminal Ingrediente INGREDIENTE;
+non terminal ArrayList<Paso> SECCIONPASOS, LISTAPASOS, PASOS;
+non terminal Paso PASO;
+non terminal ArrayList<Paso> PASOSTEXTUALES;
+non terminal Paso PASOTEXTUAL;
+non terminal ArrayList<Paso> PASOSMAQUINAS;
+non terminal PasoMaquina PASOMAQUINA;
+non terminal PasoIntroducir INTRODUCIR, INTRODUCIRARGS;
+non terminal PasoSacar SACAR;
 
 /* -------------Declaracion de precedencias -----------*/
 
@@ -52,48 +52,268 @@ non terminal /*PasoSacar padre Paso*/ SACAR;
 
 /* --------------Declaracion de la gramatica -----------*/
 
-SECCIONMENU ::= menu id dospuntos cadena izqLlave AUTOR SECCIONPLATOS SECCIONINGREDIENTES SECCIONRECETAS drchLlave | menu id dospuntos cadena izqLlave AUTOR SECCIONPLATOS SECCIONRECETAS drchLlave;
-AUTOR ::= nickname id pcoma;
+PROGRAMA ::=
+SECCIONMENU:men
+{:
+	ArrayList<Menu> vmenus = new ArrayList<Menu>();
+	vmenus.add(men);
+	RESULT=vmenus;
+:} |
+SECCIONMENU:men PROGRAMA:vmen
+{:
+	vmen.add(men);
+	RESULT=vmen;
+:};
+
+
+SECCIONMENU ::=
+menu id:id dospuntos cadena:nom izqLlave AUTOR:aut SECCIONPLATOS:vpla SECCIONINGREDIENTES:ving SECCIONRECETAS:vpla2 drchLlave
+{:
+	vpla=vpla2;
+	Menu menu = new Menu(id, nom, aut, vpla, ving);
+	RESULT=menu;
+:} |
+menu id:id dospuntos cadena:nom izqLlave AUTOR:aut SECCIONPLATOS:vpla SECCIONRECETAS:vpla2 drchLlave {:
+	Menu menu = new Menu(id, nom, aut, vpla, new ArrayList<Ingrediente>());
+	RESULT=menu;
+:};
+
+
+AUTOR ::=
+nickname id:aut pcoma
+{:
+	RESULT=aut;
+:};
+
 
 /*Declaracion de todos los platos con sus respectivos nombres*/
-SECCIONPLATOS ::= platos izqLlave LISTADOPLATOS drchLlave;
-LISTADOPLATOS ::= PLATO | PLATO LISTADOPLATOS;
-PLATO ::= id dospuntos cadena pcoma;
+SECCIONPLATOS ::=
+platos izqLlave LISTADOPLATOS:vpla drchLlave
+{:
+	RESULT=vpla;
+:};
+
+
+LISTADOPLATOS ::=
+PLATO:pla
+{:
+	ArrayList<Plato> vplatos = new ArrayList<Plato>();
+	vplatos.add(pla);
+	RESULT=vplatos;
+:} |
+PLATO:pla LISTADOPLATOS:vpla
+{:
+	vpla.add(pla);
+	RESULT=vpla;
+:};
+
+
+PLATO ::=
+id:id dospuntos cadena:nom pcoma
+{:
+	Plato plato = new Plato(id, nom);
+	RESULT=plato;
+:};
 
 /*Todas las recetas listadas un plato tras otro con su informacion pertinente*/
-SECCIONRECETAS ::= RECETA | RECETA SECCIONRECETAS;
-RECETA ::= plato id izqLlave TIPO COMENSALES TIEMPO  SECCIONINGREDIENTES SECCIONPASOS drchLlave | plato cadena izqLlave TIPO COMENSALES TIEMPO  SECCIONPASOS drchLlave;
+SECCIONRECETAS ::=
+RECETA
+{:
+
+:} |
+RECETA SECCIONRECETAS
+{:
+
+:};
+
+
+RECETA ::=
+plato id izqLlave TIPO COMENSALES TIEMPO SECCIONINGREDIENTES SECCIONPASOS drchLlave
+{:
+
+:} |
+plato cadena izqLlave TIPO COMENSALES TIEMPO SECCIONPASOS drchLlave
+{:
+
+:};
+
 
 /*La parte con la informacion sobre el plato: el tipo de plato que es, para cuantos comensales y los tiempos que se tardan.*/
-TIPO ::= tipo nombreTipo pcoma;
-COMENSALES ::= comensales numero pcoma;
-TIEMPO ::= tCocinado numero medidaTiempo pcoma
-					 tPreparacion numero medidaTiempo pcoma
-					 tTotal numero medidaTiempo pcoma |
-					 tTotal numero medidaTiempo pcoma |
-					 tCocinado numero medidaTiempo pcoma
-					 tPreparacion numero medidaTiempo pcoma;
+TIPO ::=
+tipo nombreTipo:tip pcoma
+{:
+	RESULT=EnumTipo.valueOf(tip);
+:};
+
+
+COMENSALES ::=
+comensales numero:num pcoma
+{:
+	RESULT=num;
+:};
+
+
+TIEMPO ::=
+tCocinado numero:tcoc medidaTiempo:mcoc pcoma tPreparacion numero:tpre medidaTiempo:mpre pcoma tTotal numero:ttot medidaTiempo:mtot pcoma
+{:
+	Tiempos tiempos = new Tiempos(tcoc, EnumTiempo.valueOf(mcoc), tpre, EnumTiempo.valueOf(mpre), ttot, EnumTiempo.valueOf(mtot));
+	RESULT=tiempos;
+:} |
+tTotal numero:ttot medidaTiempo:mtot pcoma
+{:
+	Tiempos tiempos = new Tiempos(0, EnumTiempo.valueOf("MIN"), 0, EnumTiempo.valueOf("MIN"), ttot, EnumTiempo.valueOf(mtot));
+	RESULT=tiempos;
+:} | tCocinado numero:tcoc medidaTiempo:mcoc pcoma tPreparacion numero:tpre medidaTiempo:mpre pcoma
+{:
+	Tiempos tiempos = new Tiempos(tcoc, EnumTiempo.valueOf(mcoc), tpre, EnumTiempo.valueOf(mpre), 0, EnumTiempo.valueOf("MIN"));
+	RESULT=tiempos;
+:};
+
 
 /*La seccion correspondiente a los ingredientes necesarios para la preparacion del plato*/
-SECCIONINGREDIENTES ::= ingredientes izqLlave LISTADOINGREDIENTES drchLlave;
-LISTADOINGREDIENTES ::= INGREDIENTE | INGREDIENTE LISTADOINGREDIENTES;
-INGREDIENTE ::= id:id dospuntos numero:can medidaIngrediente:med cadena:nom pcoma {:/*Ingrediente ingrediente = new Ingrediente(id, nom.substring(1,-1), can, med); RESULT=ingrediente;*/:};
+SECCIONINGREDIENTES ::=
+ingredientes izqLlave LISTADOINGREDIENTES:ving drchLlave
+{:
+	System.out.println("Ingre");
+	RESULT=ving;
+:};
+
+
+LISTADOINGREDIENTES ::=
+INGREDIENTE:ing
+{:
+	ArrayList<Ingrediente> vingredientes = new ArrayList<Ingrediente>();
+	vingredientes.add(ing);
+	RESULT=vingredientes;
+:} |
+INGREDIENTE:ing LISTADOINGREDIENTES:ving
+{:
+	ving.add(ing);
+	RESULT=ving;
+:};
+
+
+INGREDIENTE ::=
+id:id dospuntos numero:can medidaIngrediente:med cadena:nom pcoma
+{:
+	Ingrediente ingrediente = new Ingrediente(id, nom.substring(1,nom.length()-2), can, EnumMedida.valueOf(med));
+	RESULT=ingrediente;
+:};
+
 
 /*Seccion correspondiente con los pasos a seguir para la elaboracion del plato*/
-SECCIONPASOS ::= pasos izqLlave LISTAPASOS drchLlave;
-LISTAPASOS ::= PASOS SACAR PASOSTEXTUALES | PASOS SACAR LISTAPASOS;
-PASOS ::= PASOSTEXTUALES INTRODUCIR PASOSTEXTUALES PASOSMAQUINAS PASOS | PASOSTEXTUALES INTRODUCIR PASOS | PASOSTEXTUALES INTRODUCIR PASOSTEXTUALES PASOSMAQUINAS PASOSTEXTUALES;
-PASOSTEXTUALES ::= PASOTEXTUAL PASOSTEXTUALES |;
-PASOTEXTUAL ::= realizar izqParent cadena drchParent pcoma;
-PASOSMAQUINAS ::= PASOMAQUINA | PASOMAQUINA PASOSMAQUINAS;
-PASOMAQUINA ::= programar izqParent cadena coma numero coma numero coma numero coma invertir drchParent pcoma;
-INTRODUCIR ::= introducir izqParent INTRODUCIRARGS drchParent pcoma;
-INTRODUCIRARGS ::= id | numero medidaIngrediente id;
-SACAR ::= sacar izqParent cadena coma id drchParent pcoma;
+SECCIONPASOS ::=
+pasos izqLlave LISTAPASOS:vpas drchLlave
+{:
+	RESULT=vpas;
+:};
 
 
+LISTAPASOS ::=
+PASOS:vpas SACAR:sac PASOSTEXTUALES:vpastex
+{:
+	/*vpas.add(sac);
+	vpas.addAll(vpastex);
+	RESULT=vpas;*/
+:} |
+PASOS:vpas SACAR:sac LISTAPASOS:vpasfin
+{:
+	/*vpas.add(sac);
+	vpas.addAll(vpasfin);
+	RESULT=vpas;*/
+:};
 
 
+PASOS ::=
+PASOSTEXTUALES:vpastex INTRODUCIR:intr PASOSTEXTUALES:vpastex2 PASOSMAQUINAS:vpasmaq PASOS:vpas
+{:
+	vpas.addAll(vpastex);
+	vpas.add(intr);
+	vpas.addAll(vpastex2);
+	vpas.addAll(vpasmaq);
+	RESULT=vpas;
+:} |
+PASOSTEXTUALES:vpastex INTRODUCIR:intr PASOS:vpas
+{:
+	/*vpas.addAll(vpastex);
+	vpas.add(intr);
+	RESULT=vpas;*/
+:} |
+PASOSTEXTUALES:vpastex INTRODUCIR:intr PASOSTEXTUALES:vpastex2 PASOSMAQUINAS:vpasmaq PASOSTEXTUALES:vpastex3
+{:
+	/*ArrayList<Paso> vpasos = new ArrayList<Paso>();
+	vpasos.addAll(vpastex);
+	vpasos.add(intr);
+	vpasos.addAll(vpastex2);
+	vpasos.addAll(vpasmaq);
+	vpasos.addAll(vpastex3);
+	RESULT=vpasos;*/
+:};
 
+
+PASOSTEXTUALES ::=
+PASOTEXTUAL:pastex PASOSTEXTUALES:vpastex
+{:
+	vpastex.add(pastex);
+	RESULT=vpastex;
+:} |;
+
+
+PASOTEXTUAL ::=
+realizar izqParent cadena:des drchParent pcoma
+{:
+	Paso paso = new Paso(des);
+	RESULT=paso;
+:};
+
+
+PASOSMAQUINAS ::=
+PASOMAQUINA:pasmaq
+{:
+	/*ArrayList<Paso> vpasos = new ArrayList<Paso>();
+	vpasos.add(pasmaq);
+	RESULT=vpasos;*/
+:} |
+PASOMAQUINA:pasmaq PASOSMAQUINAS:vpas
+{:
+	/*vpas.add(pasmaq);
+	RESULT=vpas;*/
+:};
+
+
+PASOMAQUINA ::=
+programar izqParent cadena:des coma numero:vel coma numero:tem coma numero:tie coma invertir:inv drchParent pcoma
+{:
+	PasoMaquina paso = new PasoMaquina(des, vel, tem, tie, inv.equals("Si"));
+	RESULT=paso;
+:};
+
+
+INTRODUCIR ::=
+introducir izqParent INTRODUCIRARGS:intr drchParent pcoma
+{:
+	RESULT=intr;
+:};
+
+
+INTRODUCIRARGS ::=
+id:id
+{:
+	/*PasoIntroducir introducir = new PasoIntroducir(id);
+	RESULT=introducir;*/
+:} |
+numero:num medidaIngrediente:med id:id
+{:
+	PasoIntroducir introducir = new PasoIntroducir(id, num, EnumMedida.valueOf(med));
+	RESULT=introducir;
+:};
+
+
+SACAR ::=
+sacar izqParent cadena:nom coma id:id drchParent pcoma
+{:
+	PasoSacar sacar = new PasoSacar(nom.substring(1,nom.length()-2));
+	RESULT=sacar;
+:};
 
 

@@ -1,59 +1,34 @@
-.PHONY: flex cup tac-full
+#!/usr/bin/make -f
+# -*- made:makefile -*-
 
-DIRRES		:= resources/
 SRC := src/
 CLASSES := classes/
-LIB := libs/
 
 JVC := javac
 FLEX := jflex
 CUP := cup
-JVM := java
-
-JVMFLG := -cp "$(CLASSES):$(LIB)*"
-JFLAGS := -cp "$(LIB)*:$(CLASSES)*" -d $(CLASSES)
-FLEXJAR := jflex-full-1.7.0.jar
-FLEXC := java -jar $(LIB)$(FLEXJAR)
-FLEXFLAGS := -d $(CLASSES)
-TACJAR := gachaneitor.jar
-MAINCLASS := TACScanner
-
-CUPJAR := java-cup-11b.jar
-CUPC := java -jar $(LIB)$(CUPJAR)
-CUPFLAGS := -destdir $(CLASSES)
+CP := cp
 
 FLEXFLAG := -d
-CUPFLAG2 := -nowarn -destdir 
+CUPFLAG := -nowarn -destdir 
 
 .SUFFIXES: .java .class
 
-default: flex compileObjects cup2 compile2
+default: jflex cup copyfiles compile  execute
 
-all: clean jflex cup compile execute
-
-flex:
-	$(FLEXC) $(FLEXFLAGS) $(SRC)gachaneitor.fle
-
-compileObjects:
-	$(JVC) -cp ".:./jars/common.jar" -d $(CLASSES) $(SRC)Ingrediente.java
-cup:
-	$(CUPC) $(CUPFLAGS) $(SRC)gachaneitor.cup
-
-compile:
-	$(JVC) $(JFLAGS) $(CLASSES)*.java
+all: clean jflex cup copyfiles compile execute
 
 jflex:
 	$(FLEX) $(FLEXFLAG) $(CLASSES) $(SRC)*.fle
 
-javaObjects:
-	$(JVC) -cp ".:./jars/common.jar" $(SRC)Ingrediente.java
-	java -cp ".:./jars/common.jar" $(SRC)Ingrediente.java
+cup:
+	$(CUP) $(CUPFLAG) $(CLASSES) $(SRC)*.cup
 
-cup2:
-	$(CUP) $(CUPFLAG2) $(CLASSES) $(SRC)*.cup
+copyfiles:
+	$(CP) $(SRC)*.java $(CLASSES)
 
-compile2:
-	$(JVC) $(CLASSES)scanner.java $(CLASSES)sym.java $(CLASSES)parser.java
+compile:
+	$(JVC) $(CLASSES)*.java
 
 execute:
 	$(MAKE) -C $(CLASSES) execute
