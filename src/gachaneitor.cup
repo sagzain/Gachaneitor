@@ -18,7 +18,32 @@ parser code {:
 			System.out.println("Analisis INCORRECTO");
 		}
  	}
-:}
+	public void report_error(String message, Object info)
+	{
+		StringBuffer m = new StringBuffer("Error");
+
+		if (info instanceof java_cup.runtime.Symbol)
+		{
+			java_cup.runtime.Symbol s = ((java_cup.runtime.Symbol) info);
+
+			if (s.left >= 0)
+			{
+				m.append(" en la linea "+(s.left+1));
+
+				if (s.right >= 0)
+					m.append(", columna "+(s.right+1));
+			}
+		}
+			m.append(" : "+message);
+
+		 System.err.println(m);
+	}
+
+	public void report_fatal_error(String message, Object info) {
+			report_error(message, info);
+			System.exit(1);
+	}
+:};
 
 
 /* ------------Declaracion de la lista de simbolos de la gramatica-----------*/
@@ -30,8 +55,8 @@ terminal izqLlave, drchLlave, pcoma, coma, dospuntos, izqParent, drchParent, nic
 non terminal ArrayList<Menu> PROGRAMA;
 non terminal Menu SECCIONMENU;
 non terminal String AUTOR;
-non terminal ArrayList<Plato> SECCIONPLATOS, LISTADOPLATOS, SECCIONRECETAS, RECETA;
-non terminal Plato PLATO;
+non terminal ArrayList<Plato> SECCIONPLATOS, LISTADOPLATOS, SECCIONRECETAS;
+non terminal Plato PLATO, RECETA;
 non terminal EnumTipo TIPO;
 non terminal Integer COMENSALES;
 non terminal Tiempos TIEMPO;
@@ -115,24 +140,28 @@ id:id dospuntos cadena:nom pcoma
 	RESULT=plato;
 :};
 
+
 /*Todas las recetas listadas un plato tras otro con su informacion pertinente*/
 SECCIONRECETAS ::=
-RECETA
+RECETA:rec
 {:
-
+	ArrayList<Plato> vrecetas = new ArrayList<Plato>();
+	vrecetas.add(rec);
+	RESULT=vrecetas;
 :} |
-RECETA SECCIONRECETAS
+RECETA:rec SECCIONRECETAS:vrec
 {:
-
+	vrec.add(rec);
+	RESULT=vrec;
 :};
 
 
 RECETA ::=
-plato id izqLlave TIPO COMENSALES TIEMPO SECCIONINGREDIENTES SECCIONPASOS drchLlave
+plato id:id izqLlave TIPO:tip COMENSALES:com TIEMPO:tie SECCIONINGREDIENTES:ving SECCIONPASOS:vpas drchLlave
 {:
 
 :} |
-plato cadena izqLlave TIPO COMENSALES TIEMPO SECCIONPASOS drchLlave
+plato id:id izqLlave TIPO:tip COMENSALES:com TIEMPO:tie SECCIONPASOS:vpas drchLlave
 {:
 
 :};
@@ -174,7 +203,6 @@ tTotal numero:ttot medidaTiempo:mtot pcoma
 SECCIONINGREDIENTES ::=
 ingredientes izqLlave LISTADOINGREDIENTES:ving drchLlave
 {:
-	System.out.println("Ingre");
 	RESULT=ving;
 :};
 
@@ -227,11 +255,11 @@ PASOS:vpas SACAR:sac LISTAPASOS:vpasfin
 PASOS ::=
 PASOSTEXTUALES:vpastex INTRODUCIR:intr PASOSTEXTUALES:vpastex2 PASOSMAQUINAS:vpasmaq PASOS:vpas
 {:
-	vpas.addAll(vpastex);
+	/*vpas.addAll(vpastex);
 	vpas.add(intr);
 	vpas.addAll(vpastex2);
 	vpas.addAll(vpasmaq);
-	RESULT=vpas;
+	RESULT=vpas;*/
 :} |
 PASOSTEXTUALES:vpastex INTRODUCIR:intr PASOS:vpas
 {:
@@ -254,8 +282,8 @@ PASOSTEXTUALES:vpastex INTRODUCIR:intr PASOSTEXTUALES:vpastex2 PASOSMAQUINAS:vpa
 PASOSTEXTUALES ::=
 PASOTEXTUAL:pastex PASOSTEXTUALES:vpastex
 {:
-	vpastex.add(pastex);
-	RESULT=vpastex;
+	/*vpastex.add(pastex);
+	RESULT=vpastex;*/
 :} |;
 
 
@@ -315,5 +343,3 @@ sacar izqParent cadena:nom coma id:id drchParent pcoma
 	PasoSacar sacar = new PasoSacar(nom.substring(1,nom.length()-2));
 	RESULT=sacar;
 :};
-
-

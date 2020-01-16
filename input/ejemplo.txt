@@ -24,6 +24,8 @@ menu Mediterraneo : "Mediterraneo" {
  	      	pasos {
 		        introducir(1 UDS Tomate);
 		        programar("Trocear",15,30,5,No);
+		        introducir(1 UDS Tomate);
+		        programar("Trocear",15,30,5,No);
 			sacar("Salsa", Salsa_de_tomate);
 			realizar("limpiar Merluza_fresca");
 			introducir(1 UDS Merluza_fresca);
