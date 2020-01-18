@@ -1,5 +1,6 @@
 JV := java
-INPUT := ../input/
+MENUS := ../menus/
 
-execute:
-	$(JV) parser $(INPUT)ejemplo.txt
+default:
+	$(JV) parser $(MENUS)$(TARGET).atcf
+

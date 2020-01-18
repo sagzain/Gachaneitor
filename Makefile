@@ -1,25 +1,25 @@
-#!/usr/bin/make -f
-# -*- made:makefile -*-
-
 SRC := src/
 CLASSES := classes/
 
-JVC := javac
-FLEX := jflex
+JFLEX := jflex
 CUP := cup
 CP := cp
+JVC := javac
 
-FLEXFLAG := -d
-CUPFLAG := -nowarn -destdir 
+JFLEXFLAG := -d
+CUPFLAG := -destdir
 
-.SUFFIXES: .java .class
+TARGET := *
 
-default: jflex cup copyfiles compile  execute
+default: clean compile execute
 
-all: clean jflex cup copyfiles compile execute
+clean:
+	$(RM) $(CLASSES)*.*
+
+compile: jflex cup copyfiles compilejava
 
 jflex:
-	$(FLEX) $(FLEXFLAG) $(CLASSES) $(SRC)*.fle
+	$(JFLEX) $(JFLEXFLAG) $(CLASSES) $(SRC)*.jfle
 
 cup:
 	$(CUP) $(CUPFLAG) $(CLASSES) $(SRC)*.cup
@@ -27,11 +27,9 @@ cup:
 copyfiles:
 	$(CP) $(SRC)*.java $(CLASSES)
 
-compile:
+compilejava:
 	$(JVC) $(CLASSES)*.java
 
 execute:
-	$(MAKE) -C $(CLASSES) execute
+	$(MAKE) -C $(CLASSES) TARGET=$(TARGET)
 
-clean:
-	$(RM) $(CLASSES)*.*
