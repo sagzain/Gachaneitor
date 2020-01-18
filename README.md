@@ -14,8 +14,8 @@ make compile
 # Compilar todos los .atcf de la carpeta menus
 make execute
 
-# Compilar el archivo <archivo>.atcf de la carpeta menus
-make execute TARGET=<archivo>
+# Compilar el archivo \<archivo\>.atcf de la carpeta menus
+make execute TARGET=\<archivo\>
 
 # Limpiar compilador
 make clean
