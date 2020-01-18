@@ -7,43 +7,26 @@ import java.util.ArrayList;
 /* ----------------------Seccion componentes de codigo de usuario --------------------*/
 
 parser code {:
+	/*private LinkedList <String[]> outputs = new LinkedList<String[]>();
+	private LinkedList <String> languages = new LinkedList<String>();
+	private LinkedList <String> automatons = new LinkedList<String>();
+	private LinkedList <String[]> states = new LinkedList<String[]>();
+	private LinkedList <String[]> transitions = new LinkedList<String[]>();
+	private String initial;
+	private PrintWriter writer = null;*/
+
 	public static void main(String args[]) throws Exception {
 		File fichero=new File(args[0]);
 		FileReader entrada =new FileReader(fichero);
 		try{
 			new parser(new scanner(entrada)).parse();
-	   		System.out.println("Analisis CORRECTO");
+	   		System.out.println("\nAnalisis finalizado.");
 		}
 		catch ( Exception e) {
 			System.out.println("Analisis INCORRECTO");
 		}
  	}
-	public void report_error(String message, Object info)
-	{
-		StringBuffer m = new StringBuffer("Error");
-
-		if (info instanceof java_cup.runtime.Symbol)
-		{
-			java_cup.runtime.Symbol s = ((java_cup.runtime.Symbol) info);
-
-			if (s.left >= 0)
-			{
-				m.append(" en la linea "+(s.left+1));
-
-				if (s.right >= 0)
-					m.append(", columna "+(s.right+1));
-			}
-		}
-			m.append(" : "+message);
-
-		 System.err.println(m);
-	}
-
-	public void report_fatal_error(String message, Object info) {
-			report_error(message, info);
-			System.exit(1);
-	}
-:};
+:}
 
 
 /* ------------Declaracion de la lista de simbolos de la gramatica-----------*/
@@ -52,16 +35,17 @@ terminal String id, cadena, invertir, nombreTipo, medidaIngrediente, medidaTiemp
 terminal Integer numero;
 terminal izqLlave, drchLlave, pcoma, coma, dospuntos, izqParent, drchParent, nickname, menu, platos, sacar, introducir, comensales, pasos, tipo, programar, plato, realizar, ingredientes, tCocinado, tTotal, tPreparacion;
 
+non terminal S, AUX;
 non terminal ArrayList<Menu> PROGRAMA;
 non terminal Menu SECCIONMENU;
 non terminal String AUTOR;
-non terminal ArrayList<Plato> SECCIONPLATOS, LISTADOPLATOS, SECCIONRECETAS;
+non terminal ArrayList<Plato> SECCIONPLATOS, LISTADOPLATOS, SECCIONRECETAS, NPLATOS;
 non terminal Plato PLATO, RECETA;
 non terminal EnumTipo TIPO;
 non terminal Integer COMENSALES;
 non terminal Tiempos TIEMPO;
-non terminal ArrayList<Ingrediente> SECCIONINGREDIENTES, LISTADOINGREDIENTES;
-non terminal Ingrediente INGREDIENTE;
+non terminal ArrayList<Ingrediente> SECCIONINGREDIENTESGLOBALES, LISTADOINGREDIENTESGLOBALES, AUXINGGLO, SECCIONINGREDIENTES, LISTADOINGREDIENTES, NINGREINIT8, NINGREINIT10, NINGRE1, NINGRE2, NINGRE4;
+non terminal Ingrediente INGREDIENTE, INGREDIENTEGLOBAL;
 non terminal ArrayList<Paso> SECCIONPASOS, LISTAPASOS, PASOS;
 non terminal Paso PASO;
 non terminal ArrayList<Paso> PASOSTEXTUALES;
@@ -76,6 +60,98 @@ non terminal PasoSacar SACAR;
 
 
 /* --------------Declaracion de la gramatica -----------*/
+
+S ::= PROGRAMA:vmen
+{:
+	for(Menu m : vmen) {
+		System.out.print("Menu:");
+		System.out.print(" ID: "+m.getID());
+		System.out.print(" Nombre: "+m.getNombre());
+		System.out.println(" Autor: "+m.getNickname());
+		System.out.println();
+		System.out.println("\tIngredientes globales");
+		for(Ingrediente i : m.getIngredientesGlobales()) {
+			System.out.print("\t\tIngrediente global:");
+			System.out.print(" ID: "+i.getID());
+			System.out.print(" Nombre: "+i.getNombre());
+			System.out.print(" Cantidad: "+i.getCantidad());
+			System.out.println(" Medida: "+i.getMedida());
+			System.out.println();
+		}
+		System.out.println("\tPlatos");
+		System.out.println();
+		for(Plato p : m.getPlatos()) {
+			System.out.print("\t\tPlato:");
+			System.out.print(" ID: "+p.getID());
+			System.out.print(" Nombre: "+p.getNombre());
+			System.out.print(" Tipo: "+p.getTipo());
+			System.out.print(" Comensales: "+p.getComensales());
+			System.out.print(" TCocinado: "+p.getTiempos().getTCocinado());
+			System.out.print(" MCocinado: "+p.getTiempos().getMCocinado());
+			System.out.print(" TPreparacion: "+p.getTiempos().getTPreparacion());
+			System.out.print(" MPreparacion: "+p.getTiempos().getMPreparacion());
+			System.out.print(" TTotal: "+p.getTiempos().getTTotal());
+			System.out.println(" MTotal: "+p.getTiempos().getMTotal());
+			System.out.println("\t\tIngredientes");
+			for(Ingrediente i : p.getIngredientes()) {
+				System.out.print("\t\t\tIngrediente:");
+				System.out.print(" ID: "+i.getID());
+				System.out.print(" Nombre: "+i.getNombre());
+				System.out.print(" Cantidad: "+i.getCantidad());
+				System.out.println(" Medida: "+i.getMedida());
+			}
+			System.out.println("\t\tPasos");
+			for(Paso pa : p.getPasos()) {
+				System.out.println("\t\t\tDescripcion: "+pa.getDescripcion());
+			}
+			System.out.println();
+		}
+		System.out.println();
+		System.out.println();
+		System.out.println();
+	}
+:};
+
+
+AUX ::=;
+
+
+NPLATOS ::=
+{:
+	RESULT=((ArrayList<Plato>) ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value);
+:};
+
+
+NINGREINIT8 ::=
+{:
+	RESULT=((ArrayList<Ingrediente>) ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-8)).value);
+:};
+
+
+NINGREINIT10 ::=
+{:
+	ArrayList<Ingrediente> vingredientes = ((ArrayList<Ingrediente>) ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-11)).value);
+	RESULT=vingredientes;
+:};
+
+
+NINGRE1 ::=
+{:
+	RESULT=((ArrayList<Ingrediente>) ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value);
+:};
+
+
+NINGRE2 ::=
+{:
+	RESULT=((ArrayList<Ingrediente>) ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value);
+:};
+
+
+NINGRE4 ::=
+{:
+	RESULT=((ArrayList<Ingrediente>) ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-4)).value);
+:};
+
 
 PROGRAMA ::=
 SECCIONMENU:men
@@ -92,14 +168,14 @@ SECCIONMENU:men PROGRAMA:vmen
 
 
 SECCIONMENU ::=
-menu id:id dospuntos cadena:nom izqLlave AUTOR:aut SECCIONPLATOS:vpla SECCIONINGREDIENTES:ving SECCIONRECETAS:vpla2 drchLlave
+menu id:id dospuntos cadena:nom izqLlave AUTOR:aut SECCIONPLATOS:vpla SECCIONINGREDIENTESGLOBALES:ving AUXINGGLO:ving2 NPLATOS:np NINGRE1 SECCIONRECETAS:vpla2 drchLlave
 {:
-	vpla=vpla2;
-	Menu menu = new Menu(id, nom, aut, vpla, ving);
-	RESULT=menu;
-:} |
-menu id:id dospuntos cadena:nom izqLlave AUTOR:aut SECCIONPLATOS:vpla SECCIONRECETAS:vpla2 drchLlave {:
-	Menu menu = new Menu(id, nom, aut, vpla, new ArrayList<Ingrediente>());
+
+
+	System.out.println("Warning platos sin construir: "+np.size());
+
+
+	Menu menu = new Menu(id, nom.replaceAll("\"",""), aut, vpla2, ving);
 	RESULT=menu;
 :};
 
@@ -136,34 +212,94 @@ PLATO:pla LISTADOPLATOS:vpla
 PLATO ::=
 id:id dospuntos cadena:nom pcoma
 {:
-	Plato plato = new Plato(id, nom);
+	Plato plato = new Plato(id, nom.replaceAll("\"",""));
 	RESULT=plato;
+:};
+
+
+/*La seccion correspondiente a los ingredientes necesarios para la preparacion del plato*/
+SECCIONINGREDIENTESGLOBALES ::=
+ingredientes izqLlave LISTADOINGREDIENTESGLOBALES:ving drchLlave
+{:
+	RESULT=ving;
+:} |
+{:
+	RESULT=new ArrayList<Ingrediente>();
+:};
+
+
+LISTADOINGREDIENTESGLOBALES ::=
+INGREDIENTEGLOBAL:ing
+{:
+	ArrayList<Ingrediente> vingredientes = new ArrayList<Ingrediente>();
+	vingredientes.add(ing);
+	RESULT=vingredientes;
+:} |
+INGREDIENTEGLOBAL:ing LISTADOINGREDIENTESGLOBALES:ving
+{:
+	ving.add(ing);
+	RESULT=ving;
+:};
+
+
+INGREDIENTEGLOBAL ::=
+id:id dospuntos numero:can medidaIngrediente:med cadena:nom pcoma
+{:
+	String nombre = nom.replaceAll("\"","");
+	Ingrediente ingrediente = new Ingrediente(id, nombre, can, EnumMedida.valueOf(med));
+	RESULT=ingrediente;
+:};
+
+
+AUXINGGLO ::=
+{:
+	RESULT=new ArrayList<Ingrediente>(((ArrayList<Ingrediente>) ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top)).value));
 :};
 
 
 /*Todas las recetas listadas un plato tras otro con su informacion pertinente*/
 SECCIONRECETAS ::=
-RECETA:rec
+RECETA:rec NPLATOS:np NINGRE2
 {:
 	ArrayList<Plato> vrecetas = new ArrayList<Plato>();
 	vrecetas.add(rec);
 	RESULT=vrecetas;
 :} |
-RECETA:rec SECCIONRECETAS:vrec
+RECETA:rec NPLATOS NINGRE2 SECCIONRECETAS:vrec
 {:
 	vrec.add(rec);
 	RESULT=vrec;
 :};
 
 
-RECETA ::=
-plato id:id izqLlave TIPO:tip COMENSALES:com TIEMPO:tie SECCIONINGREDIENTES:ving SECCIONPASOS:vpas drchLlave
+RECETA ::= plato id:id izqLlave TIPO:tip COMENSALES:com TIEMPO:tie SECCIONINGREDIENTES:ving AUXINGGLO:ving2 SECCIONPASOS:vpas drchLlave
 {:
+	if(ving2.size()>0) {
+	
 
-:} |
-plato id:id izqLlave TIPO:tip COMENSALES:com TIEMPO:tie SECCIONPASOS:vpas drchLlave
-{:
+		System.out.println("Warning no introduces todos los ingredientes locales del plato "+id);
 
+
+	}
+	Plato plato = new Plato(id,"");
+	ArrayList<Plato> vplatos = ((ArrayList<Plato>) ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-11)).value);
+	for(int i = 0; i < vplatos.size(); i++) {
+		if(id.equals((vplatos.get(i)).getID())) {
+			plato.setNombre((vplatos.get(i)).getNombre());
+			plato.setTipo(tip);
+			plato.setComensales(com);
+			plato.setTiempos(tie);
+			plato.setIngredientes(ving);
+			plato.setPasos(vpas);
+			((ArrayList<Plato>) ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-11)).value).remove(i);
+		}
+
+
+//Control de que no hay igual
+
+
+	}
+	RESULT=plato;
 :};
 
 
@@ -199,11 +335,13 @@ tTotal numero:ttot medidaTiempo:mtot pcoma
 :};
 
 
-/*La seccion correspondiente a los ingredientes necesarios para la preparacion del plato*/
 SECCIONINGREDIENTES ::=
-ingredientes izqLlave LISTADOINGREDIENTES:ving drchLlave
+ingredientes izqLlave NINGREINIT8 LISTADOINGREDIENTES:ving drchLlave
 {:
 	RESULT=ving;
+:} |
+{:
+	RESULT=new ArrayList<Ingrediente>();
 :};
 
 
@@ -214,7 +352,7 @@ INGREDIENTE:ing
 	vingredientes.add(ing);
 	RESULT=vingredientes;
 :} |
-INGREDIENTE:ing LISTADOINGREDIENTES:ving
+INGREDIENTE:ing NINGRE1 LISTADOINGREDIENTES:ving
 {:
 	ving.add(ing);
 	RESULT=ving;
@@ -224,73 +362,90 @@ INGREDIENTE:ing LISTADOINGREDIENTES:ving
 INGREDIENTE ::=
 id:id dospuntos numero:can medidaIngrediente:med cadena:nom pcoma
 {:
-	Ingrediente ingrediente = new Ingrediente(id, nom.substring(1,nom.length()-2), can, EnumMedida.valueOf(med));
+	for(Ingrediente i : ((ArrayList<Ingrediente>) ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-6)).value)) {
+		if(id.equals(i.getID())) {
+
+
+			System.out.println("Error existe un ingrediente global con el mismo id");
+
+
+		}
+	}
+	Ingrediente ingrediente = new Ingrediente(id, nom.replaceAll("\"",""), can, EnumMedida.valueOf(med));
 	RESULT=ingrediente;
 :};
 
 
 /*Seccion correspondiente con los pasos a seguir para la elaboracion del plato*/
 SECCIONPASOS ::=
-pasos izqLlave LISTAPASOS:vpas drchLlave
+pasos izqLlave PASOSTEXTUALES:vpastex NINGREINIT10 NINGRE4 LISTAPASOS:vpas drchLlave
 {:
+	vpas.addAll(vpastex);
 	RESULT=vpas;
 :};
 
 
 LISTAPASOS ::=
-PASOS:vpas SACAR:sac PASOSTEXTUALES:vpastex
+PASOS:vpas SACAR:sac PASOSTEXTUALES:vpastex NINGRE4 NINGRE4
 {:
-	/*vpas.add(sac);
-	vpas.addAll(vpastex);
-	RESULT=vpas;*/
+	ArrayList<Paso> vpasos = new ArrayList<Paso>();
+	vpasos.addAll(vpastex);
+	vpasos.add(sac);
+	vpasos.addAll(vpas);
+	RESULT=vpasos;
 :} |
-PASOS:vpas SACAR:sac LISTAPASOS:vpasfin
+PASOS:vpas SACAR:sac PASOSTEXTUALES:vpastex NINGRE4 NINGRE4 LISTAPASOS:vpasfin
 {:
-	/*vpas.add(sac);
-	vpas.addAll(vpasfin);
-	RESULT=vpas;*/
+	vpasfin.addAll(vpastex);
+	vpasfin.add(sac);
+	vpasfin.addAll(vpas);
+	RESULT=vpasfin;
 :};
 
 
 PASOS ::=
-PASOSTEXTUALES:vpastex INTRODUCIR:intr PASOSTEXTUALES:vpastex2 PASOSMAQUINAS:vpasmaq PASOS:vpas
+INTRODUCIR:intr PASOSTEXTUALES:vpastex PASOSMAQUINAS:vpasmaq NINGRE4 NINGRE4 PASOS:vpas
 {:
-	/*vpas.addAll(vpastex);
-	vpas.add(intr);
-	vpas.addAll(vpastex2);
 	vpas.addAll(vpasmaq);
-	RESULT=vpas;*/
-:} |
-PASOSTEXTUALES:vpastex INTRODUCIR:intr PASOS:vpas
-{:
-	/*vpas.addAll(vpastex);
+	vpas.addAll(vpastex);
 	vpas.add(intr);
-	RESULT=vpas;*/
+	RESULT=vpas;
+
 :} |
-PASOSTEXTUALES:vpastex INTRODUCIR:intr PASOSTEXTUALES:vpastex2 PASOSMAQUINAS:vpasmaq PASOSTEXTUALES:vpastex3
+INTRODUCIR:intr NINGRE2 NINGRE2 PASOS:vpas
 {:
-	/*ArrayList<Paso> vpasos = new ArrayList<Paso>();
-	vpasos.addAll(vpastex);
-	vpasos.add(intr);
+	vpas.add(intr);
+	RESULT=vpas;
+:} |
+INTRODUCIR:intr PASOSTEXTUALES:vpastex PASOSMAQUINAS:vpasmaq NINGRE4 NINGRE4 PASOSTEXTUALES:vpastex2
+{:
+	ArrayList<Paso> vpasos = new ArrayList<Paso>();
+
 	vpasos.addAll(vpastex2);
 	vpasos.addAll(vpasmaq);
-	vpasos.addAll(vpastex3);
-	RESULT=vpasos;*/
+	vpasos.addAll(vpastex);
+	vpasos.add(intr);
+
+
+	RESULT=vpasos;
 :};
 
 
 PASOSTEXTUALES ::=
 PASOTEXTUAL:pastex PASOSTEXTUALES:vpastex
 {:
-	/*vpastex.add(pastex);
-	RESULT=vpastex;*/
-:} |;
+	vpastex.add(pastex);
+	RESULT=vpastex;
+:} |
+{:
+	RESULT=new ArrayList<Paso>();
+:};
 
 
 PASOTEXTUAL ::=
 realizar izqParent cadena:des drchParent pcoma
 {:
-	Paso paso = new Paso(des);
+	Paso paso = new Paso(des.replaceAll("\"",""));
 	RESULT=paso;
 :};
 
@@ -298,21 +453,21 @@ realizar izqParent cadena:des drchParent pcoma
 PASOSMAQUINAS ::=
 PASOMAQUINA:pasmaq
 {:
-	/*ArrayList<Paso> vpasos = new ArrayList<Paso>();
+	ArrayList<Paso> vpasos = new ArrayList<Paso>();
 	vpasos.add(pasmaq);
-	RESULT=vpasos;*/
+	RESULT=vpasos;
 :} |
 PASOMAQUINA:pasmaq PASOSMAQUINAS:vpas
 {:
-	/*vpas.add(pasmaq);
-	RESULT=vpas;*/
+	vpas.add(pasmaq);
+	RESULT=vpas;
 :};
 
 
 PASOMAQUINA ::=
 programar izqParent cadena:des coma numero:vel coma numero:tem coma numero:tie coma invertir:inv drchParent pcoma
 {:
-	PasoMaquina paso = new PasoMaquina(des, vel, tem, tie, inv.equals("Si"));
+	PasoMaquina paso = new PasoMaquina(des.replaceAll("\"",""), vel, tem, tie, inv.equals("Si"));
 	RESULT=paso;
 :};
 
@@ -327,11 +482,120 @@ introducir izqParent INTRODUCIRARGS:intr drchParent pcoma
 INTRODUCIRARGS ::=
 id:id
 {:
-	/*PasoIntroducir introducir = new PasoIntroducir(id);
-	RESULT=introducir;*/
+	ArrayList<Ingrediente> vingredientes = ((ArrayList<Ingrediente>) (((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-3)).value));
+	for(int i = 0; i < vingredientes.size(); i++) {
+		if(id.equals(vingredientes.get(i).getID())) {
+			((ArrayList<Ingrediente>) (((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-3)).value)).remove(i);
+		}
+
+
+		//Controlar id
+
+
+
+	}
+
+
+	//Controlar si ya ha cogido ingrediente no buscar en globales
+
+
+	ArrayList<Ingrediente> vingredientesglobal = ((ArrayList<Ingrediente>) (((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-4)).value));
+	for(int i = 0; i < vingredientesglobal.size(); i++) {
+		if(id.equals(vingredientesglobal.get(i).getID())) {
+			Ingrediente ing = new Ingrediente(id, vingredientesglobal.get(i).getNombre(), vingredientesglobal.get(i).getCantidad(), vingredientesglobal.get(i).getMedida());
+			((ArrayList<Ingrediente>) (((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-4)).value)).remove(i);
+			ing.setCantidad(0);
+			((ArrayList<Ingrediente>) (((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-4)).value)).add(ing);
+		}
+
+
+		//Controlar id
+
+
+
+	}
+	PasoIntroducir introducir = new PasoIntroducir(id, 1, EnumMedida.UDS);
+	RESULT=introducir;
 :} |
 numero:num medidaIngrediente:med id:id
 {:
+	ArrayList<Ingrediente> vingredientes = ((ArrayList<Ingrediente>) (((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-5)).value));
+	for(int i = 0; i < vingredientes.size(); i++) {
+		if(id.equals(vingredientes.get(i).getID())) {
+			Ingrediente ing = new Ingrediente(id, vingredientes.get(i).getNombre(), vingredientes.get(i).getCantidad(), vingredientes.get(i).getMedida());
+			if (ing.getMedida() == EnumMedida.valueOf(med)){
+				((ArrayList<Ingrediente>) (((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-5)).value)).remove(i);	
+				if (ing.getCantidad()>num) {
+					ing.setCantidad(ing.getCantidad()-num);
+					((ArrayList<Ingrediente>) (((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-5)).value)).add(ing);
+				} else if (ing.getCantidad()==num) {
+					
+
+					System.out.println("Warning puedes utilizar la opcion introducir(id)");
+
+
+				} else {
+
+
+					System.out.println("Error no hay suficiente ingrediente");
+
+				}
+			} else {
+			
+
+				System.out.println("Error utilice la misma medida que declara en ingredientes");
+
+			}
+		}
+
+
+		//Controlar id
+
+
+	};
+
+
+	//Controlar si ya ha cogido ingrediente no buscar en globales
+
+
+	ArrayList<Ingrediente> vingredientesglobal = ((ArrayList<Ingrediente>) (((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-6)).value));
+	for(int i = 0; i < vingredientesglobal.size(); i++) {
+		if(id.equals(vingredientesglobal.get(i).getID())) {
+			Ingrediente ing = new Ingrediente(id, vingredientesglobal.get(i).getNombre(), vingredientesglobal.get(i).getCantidad(), vingredientesglobal.get(i).getMedida());
+			if (ing.getMedida() == EnumMedida.valueOf(med)){
+				((ArrayList<Ingrediente>) (((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-6)).value)).remove(i);	
+				if (ing.getCantidad()>num) {
+					ing.setCantidad(ing.getCantidad()-num);
+					((ArrayList<Ingrediente>) (((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-6)).value)).add(ing);
+				} else if (ing.getCantidad()==num) {
+					ing.setCantidad(0);
+					((ArrayList<Ingrediente>) (((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-6)).value)).add(ing);
+
+
+					System.out.println("Warning puedes utilizar la opcion introducir(id)");
+
+
+				} else {
+
+
+					System.out.println("Error no hay suficiente ingrediente");
+
+
+				}
+			} else {
+			
+
+				System.out.println("Error utilice la misma medida que declara en ingredientes");
+
+			}
+		}
+
+
+		//Controlar id
+
+
+
+	}
 	PasoIntroducir introducir = new PasoIntroducir(id, num, EnumMedida.valueOf(med));
 	RESULT=introducir;
 :};
@@ -340,6 +604,24 @@ numero:num medidaIngrediente:med id:id
 SACAR ::=
 sacar izqParent cadena:nom coma id:id drchParent pcoma
 {:
-	PasoSacar sacar = new PasoSacar(nom.substring(1,nom.length()-2));
-	RESULT=sacar;
+	for(Ingrediente i : ((ArrayList<Ingrediente>) (((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-8)).value))) {
+		if(id.equals(i.getID())) {
+
+
+			System.out.println("Error existe un ingrediente local con el mismo id");
+
+
+		}
+	}
+	for(Ingrediente i : ((ArrayList<Ingrediente>) (((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-9)).value))) {
+		if(id.equals(i.getID())) {
+
+
+			System.out.println("Error existe un ingrediente global con el mismo id");
+
+
+		}
+	}
+	((ArrayList<Ingrediente>) (((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-8)).value)).add(new Ingrediente(id, nom.replaceAll("\"",""), 1, EnumMedida.UDS));
+	RESULT=new PasoSacar(nom.replaceAll("\"",""));
 :};

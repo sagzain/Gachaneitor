@@ -77,29 +77,29 @@ INVERTIR = "Si" | "No"
 /* ------------------------Seccion de reglas y acciones ----------------------*/
 
 <YYINITIAL> {
-  {INVERTIR}    {System.out.println("Invertir "+yytext()); return new Symbol(sym.invertir, new String(yytext()));}
-  {MEDIDA}      {System.out.println("Cantidad "+yytext()); return new Symbol(sym.medidaIngrediente, new String(yytext()));}
-  {TIEMPO}      {System.out.println("Tiempo "+yytext()); return new Symbol(sym.medidaTiempo, new String(yytext()));}
-  {TIPO}        {System.out.println("Tipo "+yytext()); return new Symbol(sym.nombreTipo, new String(yytext()));}
+  {INVERTIR}    {return new Symbol(sym.invertir, new String(yytext()));}
+  {MEDIDA}      {return new Symbol(sym.medidaIngrediente, new String(yytext()));}
+  {TIEMPO}      {return new Symbol(sym.medidaTiempo, new String(yytext()));}
+  {TIPO}        {return new Symbol(sym.nombreTipo, new String(yytext()));}
   {KEYWORD}     { Integer keyword = Utility.keyWord(yytext());
   	             if (keyword != -1){
-			System.out.println("Keyword "+yytext());
+			System.out.println("-----------Keyword---------------- "+yytext());
                   	return new Symbol(keyword);}
-			System.out.println("ID-Keyword "+yytext());
+			System.out.println("-----------Keyword-ID------------- "+yytext());
 			return new Symbol(sym.id, new String(yytext()));
                 }
-  {CADENA}  	  {System.out.println("Cadena "+yytext()); return new Symbol(sym.cadena, new String(yytext()));}
-  {ID}  				{System.out.println("ID "+yytext()); return new Symbol(sym.id, new String(yytext()));}
-  {NUMERO}      {System.out.println("Numero "+yytext()); return new Symbol(sym.numero, new Integer(yytext()));}
+  {CADENA}  	  {return new Symbol(sym.cadena, new String(yytext()));}
+  {ID}  				{System.out.println("----------ID---------- "+yytext()); return new Symbol(sym.id, new String(yytext()));}
+  {NUMERO}      {return new Symbol(sym.numero, new Integer(yytext()));}
 
   /* Simbolos de separación */
-  ":" 					{System.out.println("Tipo "+yytext()); return new Symbol(sym.dospuntos);}
-  "{" 					{System.out.println("Tipo "+yytext()); return new Symbol(sym.izqLlave);}
-  "}" 					{System.out.println("Tipo "+yytext()); return new Symbol(sym.drchLlave);}
-  ";" 					{System.out.println("Tipo "+yytext()); return new Symbol(sym.pcoma);}
-  "," 					{System.out.println("Tipo "+yytext()); return new Symbol(sym.coma);}
-  "(" 					{System.out.println("Tipo "+yytext()); return new Symbol(sym.izqParent);}
-  ")" 					{System.out.println("Tipo "+yytext()); return new Symbol(sym.drchParent);}
+  ":" 					{return new Symbol(sym.dospuntos);}
+  "{" 					{return new Symbol(sym.izqLlave);}
+  "}" 					{return new Symbol(sym.drchLlave);}
+  ";" 					{return new Symbol(sym.pcoma);}
+  "," 					{return new Symbol(sym.coma);}
+  "(" 					{return new Symbol(sym.izqParent);}
+  ")" 					{return new Symbol(sym.drchParent);}
 
   .             {}
 
@@ -111,6 +111,7 @@ INVERTIR = "Si" | "No"
   "/*"        	{}
 
   "*/"					{}
+
   .            	{}
 
   [\n]        	{}

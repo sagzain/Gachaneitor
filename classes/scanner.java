@@ -703,68 +703,68 @@ public class scanner implements java_cup.runtime.Scanner {
             }
           case 17: break;
           case 2: 
-            { System.out.println("Tipo "+yytext()); return new Symbol(sym.nombreTipo, new String(yytext()));
+            { return new Symbol(sym.nombreTipo, new String(yytext()));
             }
           case 18: break;
           case 3: 
-            { System.out.println("Numero "+yytext()); return new Symbol(sym.numero, new Integer(yytext()));
+            { return new Symbol(sym.numero, new Integer(yytext()));
             }
           case 19: break;
           case 4: 
             { Integer keyword = Utility.keyWord(yytext());
   	             if (keyword != -1){
-			System.out.println("Keyword "+yytext());
+			System.out.println("-----------Keyword---------------- "+yytext());
                   	return new Symbol(keyword);}
-			System.out.println("ID-Keyword "+yytext());
+			System.out.println("-----------Keyword-ID------------- "+yytext());
 			return new Symbol(sym.id, new String(yytext()));
             }
           case 20: break;
           case 5: 
-            { System.out.println("Cantidad "+yytext()); return new Symbol(sym.medidaIngrediente, new String(yytext()));
+            { return new Symbol(sym.medidaIngrediente, new String(yytext()));
             }
           case 21: break;
           case 6: 
-            { System.out.println("Tiempo "+yytext()); return new Symbol(sym.medidaTiempo, new String(yytext()));
+            { return new Symbol(sym.medidaTiempo, new String(yytext()));
             }
           case 22: break;
           case 7: 
-            { System.out.println("Tipo "+yytext()); return new Symbol(sym.dospuntos);
+            { return new Symbol(sym.dospuntos);
             }
           case 23: break;
           case 8: 
-            { System.out.println("Tipo "+yytext()); return new Symbol(sym.izqLlave);
+            { return new Symbol(sym.izqLlave);
             }
           case 24: break;
           case 9: 
-            { System.out.println("Tipo "+yytext()); return new Symbol(sym.drchLlave);
+            { return new Symbol(sym.drchLlave);
             }
           case 25: break;
           case 10: 
-            { System.out.println("Tipo "+yytext()); return new Symbol(sym.pcoma);
+            { return new Symbol(sym.pcoma);
             }
           case 26: break;
           case 11: 
-            { System.out.println("Tipo "+yytext()); return new Symbol(sym.coma);
+            { return new Symbol(sym.coma);
             }
           case 27: break;
           case 12: 
-            { System.out.println("Tipo "+yytext()); return new Symbol(sym.izqParent);
+            { return new Symbol(sym.izqParent);
             }
           case 28: break;
           case 13: 
-            { System.out.println("Tipo "+yytext()); return new Symbol(sym.drchParent);
+            { return new Symbol(sym.drchParent);
             }
           case 29: break;
           case 14: 
-            { System.out.println("ID "+yytext()); return new Symbol(sym.id, new String(yytext()));
+            { System.out.println("----------ID---------- "+yytext()); return new Symbol(sym.id, new String(yytext()));
             }
           case 30: break;
           case 15: 
-            { System.out.println("Invertir "+yytext()); return new Symbol(sym.invertir, new String(yytext()));
+            { return new Symbol(sym.invertir, new String(yytext()));
             }
           case 31: break;
           case 16: 
-            { System.out.println("Cadena "+yytext()); return new Symbol(sym.cadena, new String(yytext()));
+            { return new Symbol(sym.cadena, new String(yytext()));
             }
           case 32: break;
           default:

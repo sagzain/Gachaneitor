@@ -25,6 +25,10 @@ public class Plato {
 	public String getNombre() {
 		return this.nombre;
 	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
 	
 	public EnumTipo getTipo() {
 		return this.tipo;

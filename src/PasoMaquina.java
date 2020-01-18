@@ -3,35 +3,35 @@ public class PasoMaquina extends Paso {
 	private Integer temperatura;
 	private Integer tiempo;
 	private boolean invertir;
-	
+
 	public PasoMaquina(String descripcion, Integer velocidad, Integer temperatura, Integer tiempo, boolean invertir) {
-		super(descripcion);
+		super(descripcion+" poniendo velocidad "+ velocidad+" a temperatura "+temperatura+"º durante "+tiempo+"min (Invertir: "+(invertir ? "Si" : "No")+")");
 		this.velocidad = velocidad;
 		this.temperatura = temperatura;
 		this.tiempo = tiempo;
 		this.invertir = invertir;
 	}
-	
+
 	public Integer getVelocidad() {
 		return this.velocidad;
 	}
-	
+
 	public void setVelocidad(Integer velocidad) {
 		this.velocidad = velocidad;
 	}
-	
+
 	public Integer getTemperatura() {
 		return this.temperatura;
 	}
-	
+
 	public void setTemperatura(Integer temperatura) {
 		this.temperatura = temperatura;
 	}
-	
+
 	public Integer getTiempo() {
 		return this.tiempo;
 	}
-	
+
 	public void setTiempo(Integer tiempo) {
 		this.tiempo = tiempo;
 	}
@@ -45,4 +45,3 @@ public class PasoMaquina extends Paso {
 	}
 
 }
-
