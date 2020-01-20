@@ -55,6 +55,7 @@ class Utility {
 
 %state COMMENT
 
+Comment = "/*" [^*] ~"*/" | "/*" "*"+ "/" 
 ID = [a-zA-Z][a-zA-Z0-9_]*
 NUMERO = [1-9][:digit:]*
 CADENA = \" [a-zA-Z][a-zA-Z_ ]* \"
@@ -131,23 +132,17 @@ INVERTIR = "Si" | "No"
 		return new Symbol(sym.drchParent);
 	}
 
+	{Comment} {  }
+
 	. {}
 
 }
 
-<COMMENT> {
 
-	"//".* {}
 
-	"/*" {}
+	
 
-	"*/" {}
 
-	. {}
-
-	[\n] {}
-
-}
 
 [^] | \n {}
 

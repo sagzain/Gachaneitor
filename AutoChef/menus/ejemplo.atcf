@@ -10,7 +10,7 @@ menu Mediterraneo : "Mediterraneo" {
 	ingredientes {
 		toma : 3 UDS "Tomate";
 	}
-
+	/*hola*/
 	plato Merluza {
 		tipo PESCADO;
 		comensales 4;
