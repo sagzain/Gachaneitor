@@ -8,6 +8,9 @@ El lenguaje deberá tener una zona en la que se definan los ingredientes y canti
 
 Además, cada receta deberá contar con información sobre el autor, el tipo de plato, el tiempo de preparación, cocinado y total, el número de comensales y por supuesto el nombre de cada plato.
 
+# Preparar proyecto
+make project
+
 # Compilar compilador
 make compile
 
@@ -23,5 +26,11 @@ make execute  FLAG=nogui
 # Compilar el archivo <archivo>.atcf de la carpeta menus sin ejecutar la interfaz
 make execute FLAG=nogui TARGET=<archivo>
 
+# Limpiar aplicacion
+make cleanaplication
+
 # Limpiar compilador
-make clean
+make cleancompiler
+
+# Comando fácil (cleancompiler project compile execute)
+make
