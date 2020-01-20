@@ -14,17 +14,17 @@ make project
 # Compilar compilador
 make compile
 
-# Compilar todos los .atcf de la carpeta menus
+# Compilar todos los .atcf de la carpeta menus y ejecutar la interfaz
 make execute
 
-# Compilar el archivo \<archivo\>.atcf de la carpeta menus y ejecutar la interfaz
-make execute TARGET=\<archivo\>
+# Compilar el archivo <archivo>.atcf de la carpeta menus y ejecutar la interfaz
+make execute TARGET=<archivo>
 
 # Compilar todos los .atcf de la carpeta menus sin ejecutar la interfaz
 make execute  FLAG=nogui
 
-# Compilar el archivo \<archivo\>.atcf de la carpeta menus sin ejecutar la interfaz
-make execute FLAG=nogui TARGET=\<archivo\>
+# Compilar el archivo <archivo>.atcf de la carpeta menus sin ejecutar la interfaz
+make execute FLAG=nogui TARGET=<archivo>
 
 # Limpiar aplicacion
 make cleanaplication
