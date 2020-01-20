@@ -409,9 +409,11 @@ INTRODUCIRARGS ::=
 id:id
 {:
 	boolean encontrado = false;
+	String nombre = id;
 	ArrayList<Ingrediente> vingredientes = ((ArrayList<Ingrediente>) (((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-3)).value));
 	for(int i = 0; i < vingredientes.size(); i++) {
 		if(id.equals(vingredientes.get(i).getID())) {
+			nombre = vingredientes.get(i).getNombre();
 			((ArrayList<Ingrediente>) (((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-3)).value)).remove(i);
 			encontrado = true;
 		}
@@ -424,6 +426,7 @@ id:id
 				((ArrayList<Ingrediente>) (((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-4)).value)).remove(i);
 				ing.setCantidad(0);
 				((ArrayList<Ingrediente>) (((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-4)).value)).add(ing);
+				nombre = ing.getNombre();
 				encontrado = true;
 			}
 		}
@@ -432,12 +435,13 @@ id:id
 		System.out.println("ERROR: no existe el ingrediente con id: "+id);
 		throw new Exception("ERROR: no existe el ingrediente con id: "+id);
 	}
-	PasoIntroducir introducir = new PasoIntroducir(id, 1, EnumMedida.UDS);
+	PasoIntroducir introducir = new PasoIntroducir(nombre, 1, EnumMedida.UDS);
 	RESULT=introducir;
 :} |
 numero:num medidaIngrediente:med id:id
 {:
 	boolean encontrado = false;
+	String nombre = id;
 	ArrayList<Ingrediente> vingredientes = ((ArrayList<Ingrediente>) (((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-5)).value));
 	for(int i = 0; i < vingredientes.size(); i++) {
 		if(id.equals(vingredientes.get(i).getID())) {
@@ -457,6 +461,7 @@ numero:num medidaIngrediente:med id:id
 				System.out.println("ERROR: utilice la misma medida que declara en ingredientes para el ingrediente con id: "+id);
             			throw new Exception("ERROR: utilice la misma medida que declara en ingredientes para el ingrediente con id: "+id);
 			}
+			nombre = ing.getNombre();
 			encontrado = true;
 		}
 
@@ -484,6 +489,7 @@ numero:num medidaIngrediente:med id:id
 					System.out.println("ERROR: utilice la misma medida que declara en ingredientes para el ingrediente con id: "+id);
             				throw new Exception("ERROR: utilice la misma medida que declara en ingredientes para el ingrediente con id: "+id);
 				}
+				nombre = ing.getNombre();
 				encontrado = true;
 			}
 		}
@@ -492,7 +498,7 @@ numero:num medidaIngrediente:med id:id
 		System.out.println("ERROR: no existe el ingrediente con id: "+id);
 		throw new Exception("ERROR: no existe el ingrediente con id: "+id);
 	}
-	PasoIntroducir introducir = new PasoIntroducir(id, num, EnumMedida.valueOf(med));
+	PasoIntroducir introducir = new PasoIntroducir(nombre, num, EnumMedida.valueOf(med));
 	RESULT=introducir;
 :};
 
